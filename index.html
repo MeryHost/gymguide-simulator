@@ -121,7 +121,7 @@
 
     .upload-box {
       width: 100%;
-      height: 130px;
+      height: 160px;
       background: var(--bg-card);
       border: 1.5px dashed #2a2a2a;
       border-radius: var(--border-radius-md);
@@ -218,7 +218,7 @@
     }
 
     .goal-btn {
-      padding: 12px 20px;
+      padding: 12px 24px;
       border-radius: var(--border-radius-pill);
       border: 1px solid #222;
       background: var(--bg-card);
@@ -245,6 +245,26 @@
       color: #fff;
       border-color: var(--primary-red);
       box-shadow: 0 4px 18px var(--primary-red-glow);
+    }
+
+    .studio-input {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid #222;
+      border-radius: var(--border-radius-sm);
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 12px 16px;
+      font-family: inherit;
+      outline: none;
+      transition: all var(--transition-speed);
+      box-sizing: border-box;
+      margin-top: 8px;
+    }
+    .studio-input:focus {
+      border-color: #444;
+      background: rgba(255, 255, 255, 0.03);
     }
 
     /* Weight: White active */
@@ -474,18 +494,9 @@
     }
 
     /* RIGHT SECTION - iPhone Mockup */
-    .mockup-panel {
-      flex: 0.9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #14ff00;
-      border-radius: 16px;
-    }
-
     .iphone-container {
-      width: 280px;
-      height: 570px;
+      width: 390px;
+      height: 760px;
       background: #000000;
       border-radius: var(--iphone-bezel);
       padding: 8px;
@@ -498,6 +509,7 @@
       display: flex;
       flex-direction: column;
       user-select: none;
+      container-type: inline-size;
     }
 
     .iphone-screen {
@@ -599,8 +611,9 @@
     /* Content Area */
     .iphone-content {
       flex: 1;
-      padding: 12px 14px;
+      padding: clamp(8px, 3.1cqw, 12px) clamp(10px, 3.6cqw, 14px);
       overflow-y: auto;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       position: relative;
@@ -618,21 +631,24 @@
       flex: 1;
       height: 100%;
       opacity: 0;
-      animation: screenFadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation: amazingSlideIn 0.55s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+      justify-content: space-between;
     }
 
     .iphone-screen-view.active {
       display: flex;
     }
 
-    @keyframes screenFadeIn {
-      from {
+    @keyframes amazingSlideIn {
+      0% {
         opacity: 0;
-        transform: scale(0.97);
+        transform: translateX(40px) scale(0.96);
+        filter: blur(8px);
       }
-      to {
+      100% {
         opacity: 1;
-        transform: scale(1);
+        transform: translateX(0) scale(1);
+        filter: blur(0px);
       }
     }
 
@@ -640,22 +656,22 @@
     .ai-badge {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      padding: 3px 7px;
+      gap: clamp(2px, 1cqw, 4px);
+      padding: clamp(2px, 0.8cqw, 3px) clamp(5px, 1.8cqw, 7px);
       border-radius: 20px;
       border: 1px solid rgba(255, 0, 0, 0.3);
       background: rgba(255, 0, 0, 0.06);
       color: var(--primary-red);
-      font-size: 8px;
+      font-size: clamp(8px, 2.5cqw, 10px);
       font-weight: 800;
       letter-spacing: 0.8px;
       text-transform: uppercase;
       align-self: flex-start;
-      margin-bottom: 8px;
+      margin-bottom: clamp(6px, 2cqw, 8px);
     }
 
     .iphone-content h3 {
-      font-size: 20px;
+      font-size: clamp(20px, 6.5cqw, 24px);
       line-height: 1.15;
       font-weight: 800;
       color: var(--text-main);
@@ -663,16 +679,16 @@
     }
 
     .iphone-subtitle {
-      font-size: 10px;
+      font-size: clamp(10px, 3.2cqw, 13px);
       color: var(--text-muted);
       line-height: 1.3;
-      margin-bottom: 12px;
+      margin-bottom: clamp(8px, 3.1cqw, 12px);
     }
 
     /* Upload Screen View Elements */
     .phone-upload-box {
       width: 100%;
-      height: 130px;
+      height: clamp(150px, 59cqw, 230px);
       background: #111;
       border: 1.5px dashed #262626;
       border-radius: var(--border-radius-md);
@@ -681,17 +697,27 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 6px;
+      gap: clamp(4px, 1.5cqw, 6px);
       color: var(--text-muted);
       position: relative;
       overflow: hidden;
-      margin-bottom: 12px;
+      margin-bottom: clamp(8px, 3.1cqw, 12px);
       cursor: pointer;
     }
 
     .phone-upload-box.has-image {
       border-style: solid;
       border-color: #2a2a2a;
+    }
+
+    .phone-upload-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      width: 100%;
+      height: 100%;
     }
 
     .phone-upload-box img {
@@ -701,19 +727,19 @@
     }
 
     .phone-upload-icon {
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       color: var(--primary-red);
     }
 
     .phone-upload-text {
-      font-size: 11px;
+      font-size: 14px;
       font-weight: 600;
       color: var(--text-main);
     }
 
     .phone-upload-subtext {
-      font-size: 9px;
+      font-size: 11px;
       opacity: 0.7;
     }
 
@@ -733,7 +759,7 @@
     }
 
     .analyzing-overlay span {
-      font-size: 11px;
+      font-size: 14px;
       font-weight: 700;
       color: #fff;
     }
@@ -753,24 +779,24 @@
     }
 
     .phone-section-label {
-      font-size: 10px;
+      font-size: clamp(11px, 3cqw, 13px);
       font-weight: 700;
       color: var(--text-muted);
-      margin-bottom: 6px;
+      margin-bottom: clamp(4px, 1.5cqw, 6px);
     }
 
     /* Inline Phone Goal Toggle */
     .phone-goal-toggle {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: clamp(6px, 2cqw, 8px);
+      margin-bottom: clamp(8px, 3.1cqw, 12px);
     }
 
     .phone-goal-btn {
-      padding: 9px;
+      padding: clamp(8px, 3cqw, 11px);
       border-radius: var(--border-radius-md);
-      font-size: 10px;
+      font-size: clamp(11px, 3.5cqw, 13px);
       font-weight: 700;
       border: 1px solid #222;
       background: #111;
@@ -778,7 +804,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: clamp(3px, 1cqw, 4px);
       cursor: pointer;
       transition: all var(--transition-speed);
     }
@@ -798,8 +824,8 @@
     }
 
     .phone-goal-btn svg {
-      width: 14px;
-      height: 14px;
+      width: clamp(14px, 4.5cqw, 18px);
+      height: clamp(14px, 4.5cqw, 18px);
     }
 
     /* Checklist of requirements */
@@ -807,39 +833,39 @@
       background: #111;
       border: 1px solid #1f1f1f;
       border-radius: var(--border-radius-md);
-      padding: 10px 12px;
+      padding: clamp(8px, 2.5cqw, 10px) clamp(10px, 3cqw, 12px);
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: clamp(4px, 1.5cqw, 6px);
     }
 
     .checklist-title {
-      font-size: 10px;
+      font-size: clamp(11px, 3.2cqw, 14px);
       font-weight: 700;
       color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: clamp(4px, 1.5cqw, 6px);
       margin-bottom: 2px;
     }
 
     .checklist-title svg {
-      width: 12px;
-      height: 12px;
+      width: clamp(12px, 3.5cqw, 16px);
+      height: clamp(12px, 3.5cqw, 16px);
       color: var(--primary-red);
     }
 
     .checklist-item {
-      font-size: 9px;
+      font-size: clamp(10px, 3cqw, 12px);
       color: var(--text-muted);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: clamp(4px, 1.5cqw, 6px);
     }
 
     .checklist-item svg {
-      width: 10px;
-      height: 10px;
+      width: clamp(10px, 3cqw, 14px);
+      height: clamp(10px, 3cqw, 14px);
       color: var(--success-green);
       flex-shrink: 0;
     }
@@ -847,20 +873,19 @@
     /* Generate My Transformation button */
     .btn-generate-transform {
       width: 100%;
-      padding: 14px 20px;
+      padding: clamp(10px, 3.5cqw, 14px) clamp(12px, 5cqw, 20px);
       border-radius: var(--border-radius-pill);
       border: none;
       background: var(--primary-red);
       color: #fff;
       font-family: 'Outfit', sans-serif;
-      font-size: 13px;
+      font-size: clamp(14px, 4cqw, 16px);
       font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      margin-top: 12px;
+      gap: clamp(6px, 2cqw, 8px);
       box-shadow: 0 6px 24px var(--primary-red-glow);
       transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
       letter-spacing: 0.3px;
@@ -876,9 +901,76 @@
       transform: translateY(0);
     }
 
+    .btn-generate-transform.simulated-click {
+      transform: scale(0.96) translateY(0);
+      background: var(--primary-red-hover);
+      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+    }
+
+    @keyframes dragPhotoScale {
+      0% { transform: scale(1); border-color: rgba(255,255,255,0.05); }
+      50% { transform: scale(0.97); border-color: var(--primary-red); background: rgba(255,0,0,0.05); }
+      100% { transform: scale(1); border-color: rgba(255,255,255,0.05); }
+    }
+
+    .phone-upload-box.drag-photo-anim {
+      animation: dragPhotoScale 0.8s ease-in-out forwards;
+    }
+
+    /* ===== Drag-and-Drop Ghost (First Play Flow) ===== */
+    .drag-ghost {
+      position: absolute;
+      width: clamp(46px, 13cqw, 60px);
+      height: clamp(60px, 17cqw, 78px);
+      border-radius: clamp(6px, 1.8cqw, 9px);
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 0 2px rgba(255,255,255,0.2);
+      pointer-events: none;
+      z-index: 200;
+      opacity: 0;
+    }
+
+    .drag-ghost img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .drag-ghost-cursor {
+      position: absolute;
+      bottom: -5px;
+      right: -5px;
+      width: clamp(13px, 4cqw, 17px);
+      height: clamp(13px, 4cqw, 17px);
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .drag-ghost-cursor svg {
+      width: clamp(6px, 2cqw, 9px);
+      height: clamp(6px, 2cqw, 9px);
+    }
+
+    @keyframes uploadBoxReceive {
+      0%   { transform: scale(1);     border-color: rgba(255,255,255,0.05); box-shadow: none; }
+      35%  { transform: scale(0.963); border-color: var(--primary-red);     box-shadow: 0 0 0 5px rgba(255,0,0,0.18); }
+      65%  { transform: scale(1.028); border-color: var(--primary-red);     box-shadow: 0 0 0 2px rgba(255,0,0,0.08); }
+      100% { transform: scale(1);     border-color: rgba(255,255,255,0.05); box-shadow: none; }
+    }
+
+    .phone-upload-box.receiving-drop {
+      animation: uploadBoxReceive 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    /* ================================================= */
+
     .btn-generate-transform svg {
-      width: 16px;
-      height: 16px;
+      width: clamp(16px, 5cqw, 20px);
+      height: clamp(16px, 5cqw, 20px);
       fill: currentColor;
     }
 
@@ -894,8 +986,8 @@
 
     .detecting-circle-container {
       position: relative;
-      width: 120px;
-      height: 120px;
+      width: 240px;
+      height: 240px;
       margin-bottom: 16px;
     }
 
@@ -964,7 +1056,7 @@
     }
 
     .detecting-title {
-      font-size: 13px;
+      font-size: 16px;
       font-weight: 700;
       text-align: center;
       color: var(--text-main);
@@ -972,7 +1064,7 @@
     }
 
     .detecting-sub {
-      font-size: 10px;
+      font-size: 12px;
       color: var(--text-dark);
       text-align: center;
       margin-bottom: 20px;
@@ -1002,17 +1094,18 @@
 
     .progress-percent {
       text-align: center;
-      font-size: 13px;
+      font-size: 16px;
       font-weight: 800;
       color: var(--text-main);
     }
 
     .detecting-footer {
-      font-size: 9px;
+      font-size: 11px;
       color: var(--text-dark);
       margin-top: auto;
       text-align: center;
       padding-top: 16px;
+      padding-bottom: 8px;
     }
 
     /* Validated Screen View Elements */
@@ -1027,7 +1120,7 @@
       padding: 8px 14px;
       border-radius: var(--border-radius-pill);
       color: #fff;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -1046,6 +1139,36 @@
       box-shadow: 0 0 10px rgba(34, 197, 94, 0.15);
     }
 
+    /* Validated content hidden and animation */
+    .hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .fadeInSlow {
+      animation: fadeInSlow 2.5s forwards;
+    }
+    @keyframes fadeInSlow {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .validated-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+    }
+    .validation-text {
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
     .phone-change-tag {
       position: absolute;
       top: 8px;
@@ -1053,7 +1176,7 @@
       background: rgba(0, 0, 0, 0.6);
       padding: 4px 8px;
       border-radius: 8px;
-      font-size: 8px;
+      font-size: 10px;
       font-weight: 700;
       color: var(--text-main);
       border: 1px solid rgba(255,255,255,0.05);
@@ -1062,19 +1185,19 @@
 
     .btn-generate {
       width: 100%;
-      padding: 12px;
+      padding: clamp(9px, 3.1cqw, 12px);
       border-radius: var(--border-radius-pill);
       background: var(--primary-red);
       color: white;
-      font-size: 12px;
+      font-size: clamp(13px, 4cqw, 15px);
       font-weight: 700;
       border: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      margin-top: 12px;
+      gap: clamp(4px, 1.5cqw, 6px);
+      margin-top: auto;
       box-shadow: 0 4px 14px var(--primary-red-glow);
       transition: all var(--transition-speed);
     }
@@ -1084,77 +1207,163 @@
     }
 
     .disclaimer-text {
-      font-size: 8px;
+      font-size: clamp(8px, 2.5cqw, 10px);
       color: var(--text-dark);
       text-align: center;
       line-height: 1.35;
-      margin-top: 8px;
+      margin-top: clamp(6px, 2.1cqw, 8px);
     }
 
     /* Result Screen View Elements */
-    .result-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .result-card {
+    .result-comparison-slider {
       position: relative;
-      height: 155px;
-      background: #111;
+      width: 100%;
+      height: clamp(280px, 105cqw, 420px);
       border-radius: var(--border-radius-md);
       overflow: hidden;
       border: 1px solid #1f1f1f;
+      margin-bottom: clamp(8px, 3.1cqw, 12px);
+      cursor: ew-resize;
+      user-select: none;
+      -webkit-user-select: none;
+      background: #111;
+      touch-action: none;
     }
 
-    .result-card img {
+    .slider-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .slider-layer img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    .slider-layer.before-layer {
+      z-index: 2;
+      clip-path: inset(0 50% 0 0);
+    }
+
+    .slider-layer.after-layer {
+      z-index: 1;
+    }
+
+    .slider-divider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 3px;
+      background: rgba(255, 255, 255, 0.85);
+      z-index: 3;
+      transform: translateX(-50%);
+      box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    }
+
+    .slider-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(30px, 10cqw, 40px);
+      height: clamp(30px, 10cqw, 40px);
+      background: white;
+      border-radius: 50%;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      transition: transform 0.15s ease;
+    }
+
+    .slider-handle:active {
+      transform: translate(-50%, -50%) scale(1.15);
+    }
+
+    .slider-handle svg {
+      width: clamp(14px, 4.5cqw, 18px);
+      height: clamp(14px, 4.5cqw, 18px);
+      color: #333;
     }
 
     .result-label {
       position: absolute;
-      bottom: 8px;
-      left: 8px;
-      padding: 3px 8px;
+      bottom: clamp(8px, 2.5cqw, 12px);
+      padding: clamp(3px, 1cqw, 4px) clamp(8px, 2.5cqw, 10px);
       border-radius: 6px;
-      font-size: 9px;
+      font-size: clamp(9px, 2.8cqw, 11px);
       font-weight: 700;
+      z-index: 5;
+      transition: opacity 0.3s ease;
     }
 
     .result-label.before {
-      background: rgba(0, 0, 0, 0.65);
+      left: clamp(8px, 2.5cqw, 12px);
+      background: rgba(0, 0, 0, 0.7);
       color: var(--text-muted);
-      border: 1px solid rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
     .result-label.after {
+      right: clamp(8px, 2.5cqw, 12px);
       background: var(--primary-red);
       color: white;
       box-shadow: 0 2px 6px var(--primary-red-glow);
     }
 
+    /* Hint animation on first view */
+    @keyframes sliderHint {
+      0%   { left: 50%; }
+      25%  { left: 35%; }
+      50%  { left: 65%; }
+      75%  { left: 45%; }
+      100% { left: 50%; }
+    }
+
+    .slider-hint .slider-divider,
+    .slider-hint .slider-handle {
+      animation: sliderHint 1.8s ease-in-out;
+    }
+
+    .slider-hint .slider-layer.before-layer {
+      animation: sliderHintClip 1.8s ease-in-out;
+    }
+
+    @keyframes sliderHintClip {
+      0%   { clip-path: inset(0 50% 0 0); }
+      25%  { clip-path: inset(0 65% 0 0); }
+      50%  { clip-path: inset(0 35% 0 0); }
+      75%  { clip-path: inset(0 55% 0 0); }
+      100% { clip-path: inset(0 50% 0 0); }
+    }
+
     .result-stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: clamp(6px, 2.1cqw, 8px);
+      margin-bottom: clamp(8px, 3.1cqw, 12px);
     }
 
     .stat-mini-card {
       background: #111;
       border: 1px solid #1f1f1f;
       border-radius: var(--border-radius-md);
-      padding: 8px 10px;
+      padding: clamp(6px, 2.1cqw, 8px) clamp(8px, 2.6cqw, 10px);
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
 
     .stat-mini-label {
-      font-size: 7.5px;
+      font-size: clamp(8px, 2.3cqw, 10px);
       font-weight: 700;
       color: var(--text-dark);
       text-transform: uppercase;
@@ -1162,28 +1371,29 @@
     }
 
     .stat-mini-value {
-      font-size: 11px;
+      font-size: clamp(12px, 3.5cqw, 14px);
       font-weight: 800;
       color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: clamp(3px, 1cqw, 4px);
     }
 
     .btn-share {
       width: 100%;
-      padding: 11px;
+      padding: clamp(8px, 2.8cqw, 11px);
       border-radius: var(--border-radius-pill);
       background: var(--primary-red);
       color: white;
-      font-size: 12px;
+      font-size: clamp(13px, 4cqw, 15px);
       font-weight: 700;
       border: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: clamp(4px, 1.5cqw, 6px);
+      margin-top: auto;
       box-shadow: 0 4px 14px var(--primary-red-glow);
       transition: all var(--transition-speed);
     }
@@ -1219,26 +1429,37 @@
       opacity: 1;
     }
 
-    /* Responsive adjustments */
-    @media (max-width: 900px) {
+    /* Consolidated Responsive adjustments for 6.9-inch Mockup */
+    @media (max-width: 950px) {
       body {
         padding: 20px 10px;
       }
 
       .dashboard-container {
         flex-direction: column;
+        align-items: center;
         gap: 32px;
         padding: 20px;
       }
 
       .controls-panel {
         width: 100%;
+        flex: 1 1 auto;
       }
 
       .mockup-panel {
         width: 100%;
-        padding-top: 10px;
+        display: flex;
+        justify-content: center;
+        padding-top: 20px;
         border-top: 1px solid #222;
+      }
+
+      .iphone-container {
+        width: 90vw;
+        max-width: 390px;
+        height: auto;
+        aspect-ratio: 390 / 760;
       }
     }
   </style>
@@ -1298,13 +1519,15 @@
       <div>
         <span class="section-label">Goal</span>
         <div class="goal-row">
-          <button class="goal-btn muscle-btn active" onclick="setGoal('muscle')">
-            <span>💪 Build Muscle</span>
-          </button>
-          <button class="goal-btn weight-btn" onclick="setGoal('weight')">
-            <span>🔥 Lose Weight</span>
-          </button>
+          <button class="goal-btn muscle-btn active" onclick="setGoal('muscle')"><span>Build Muscle</span></button>
+          <button class="goal-btn weight-btn" onclick="setGoal('weight')"><span>Lose Weight</span></button>
         </div>
+      </div>
+
+      <!-- Estimated Time Input -->
+      <div>
+        <span class="section-label">Estimated Time</span>
+        <input type="text" id="ctrl-estimated-time" class="studio-input" value="16 Weeks" oninput="updateEstimatedTime(this.value)">
       </div>
 
       <!-- Scene Navigation Pills -->
@@ -1312,8 +1535,8 @@
         <span class="section-label">Preview Screen</span>
         <div class="nav-pills">
           <button class="nav-pill active" onclick="setScreen('upload')">Upload</button>
+
           <button class="nav-pill" onclick="setScreen('detecting')">Detecting</button>
-          <button class="nav-pill" onclick="setScreen('validated')">Validated</button>
           <button class="nav-pill" onclick="setScreen('result')">Result</button>
         </div>
       </div>
@@ -1395,14 +1618,16 @@
 
             <!-- 1. UPLOAD SCREEN -->
             <div id="screen-upload" class="iphone-screen-view active">
-              <div class="ai-badge">
-                <svg viewBox="0 0 24 24" width="8" height="8" fill="currentColor">
-                  <path d="M12 2l2.4 7.2h7.6l-6.2 4.5 2.4 7.3-6.2-4.6-6.2 4.6 2.4-7.3-6.2-4.5h7.6z"/>
-                </svg>
-                <span>AI Powered</span>
+              <div>
+                <div class="ai-badge">
+                  <svg viewBox="0 0 24 24" width="8" height="8" fill="currentColor">
+                    <path d="M12 2l2.4 7.2h7.6l-6.2 4.5 2.4 7.3-6.2-4.6-6.2 4.6 2.4-7.3-6.2-4.5h7.6z"/>
+                  </svg>
+                  <span>AI Powered</span>
+                </div>
+                <h3>See Your Future Body</h3>
+                <p class="iphone-subtitle" style="margin-bottom:0;">Preview a realistic AI-powered body transformation based on your physique and goals.</p>
               </div>
-              <h3>See Your Future Body</h3>
-              <p class="iphone-subtitle">Preview a realistic AI-powered body transformation based on your physique and goals.</p>
               
               <div class="phone-upload-box" onclick="document.getElementById('file-input-before').click()">
                 <div class="phone-upload-inner" id="phone-upload-inner-before">
@@ -1418,24 +1643,30 @@
                   <div class="spinner"></div>
                   <span>Analyzing with AI...</span>
                 </div>
+                <div class="validated-content hidden">
+                  <div class="validation-badge-overlay hidden">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Validated</span>
+                  </div>
+                </div>
               </div>
 
-              <span class="phone-section-label">Transformation Goal</span>
-              <div class="phone-goal-toggle">
+              <div>
+                <span class="phone-section-label">Transformation Goal</span>
+                <div class="phone-goal-toggle" style="margin-bottom:0;">
                 <button class="phone-goal-btn muscle-btn active" onclick="setGoal('muscle')">
                   <svg viewBox="0 0 24 24" fill="currentColor">
-                    <!-- Dumbbell SVG icon -->
                     <path d="M5 9c-.6 0-1 .4-1 1v4c0 .6.4 1 1 1h1V9H5zm14 0h-1v6h1c.6 0 1-.4 1-1v-4c0-.6-.4-1-1-1zM9 4c-.6 0-1 .4-1 1v14c0 .6.4 1 1 1h1V4H9zm6 0h-1v16h1c.6 0 1-.4 1-1V5c0-.6-.4-1-1-1zm-4 4h2v8h-2V8z"/>
                   </svg>
                   <span>Build Muscle</span>
                 </button>
                 <button class="phone-goal-btn weight-btn" onclick="setGoal('weight')">
                   <svg viewBox="0 0 24 24" fill="currentColor">
-                    <!-- Flame SVG icon -->
                     <path d="M12 2C8.3 5.4 6 9.4 6 12.8c0 3.3 2.7 6 6 6s6-2.7 6-6c0-3.4-2.3-7.4-6-10.8zm2.5 13.5c-.8.8-2 1.2-3.1 1-1.1-.2-2-1-2.4-2.1-.4-1.2.1-2.5 1.1-3.2.1-.1.2-.1.2 0s0 .2-.1.3c-.4.8-.3 1.7.3 2.3.6.6 1.5.7 2.1.2.6-.5.7-1.4.3-2.1-.4-.8-1.2-1.3-2.1-1.3-.2 0-.3-.1-.3-.2 0-.2.2-.3.3-.3.9 0 1.7.4 2.3 1 1.2 1.2 1.1 3.2-.2 4.4z"/>
                   </svg>
                   <span>Lose Weight</span>
                 </button>
+              </div>
               </div>
 
               <!-- Photo requirements checklist -->
@@ -1512,111 +1743,36 @@
               </div>
             </div>
 
-            <!-- 3. VALIDATED SCREEN -->
-            <div id="screen-validated" class="iphone-screen-view">
-              <div class="ai-badge">
-                <svg viewBox="0 0 24 24" width="8" height="8" fill="currentColor">
-                  <path d="M12 2l2.4 7.2h7.6l-6.2 4.5 2.4 7.3-6.2-4.6-6.2 4.6 2.4-7.3-6.2-4.5h7.6z"/>
-                </svg>
-                <span>AI Powered</span>
-              </div>
-              <h3>See Your Future Body</h3>
-              <p class="iphone-subtitle">Preview a realistic AI-powered body transformation based on your physique and goals.</p>
-
-              <div class="phone-upload-box validated" onclick="document.getElementById('file-input-before').click()">
-                <div class="phone-change-tag">Change</div>
-                <div class="validation-badge-overlay">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                  <span>Photo validated ✓</span>
-                </div>
-                <img class="before-img-bind" src="">
-              </div>
-
-              <span class="phone-section-label">Transformation Goal</span>
-              <div class="phone-goal-toggle">
-                <button class="phone-goal-btn muscle-btn active" onclick="setGoal('muscle')">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M5 9c-.6 0-1 .4-1 1v4c0 .6.4 1 1 1h1V9H5zm14 0h-1v6h1c.6 0 1-.4 1-1v-4c0-.6-.4-1-1-1zM9 4c-.6 0-1 .4-1 1v14c0 .6.4 1 1 1h1V4H9zm6 0h-1v16h1c.6 0 1-.4 1-1V5c0-.6-.4-1-1-1zm-4 4h2v8h-2V8z"/>
-                  </svg>
-                  <span>Build Muscle</span>
-                </button>
-                <button class="phone-goal-btn weight-btn" onclick="setGoal('weight')">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C8.3 5.4 6 9.4 6 12.8c0 3.3 2.7 6 6 6s6-2.7 6-6c0-3.4-2.3-7.4-6-10.8zm2.5 13.5c-.8.8-2 1.2-3.1 1-1.1-.2-2-1-2.4-2.1-.4-1.2.1-2.5 1.1-3.2.1-.1.2-.1.2 0s0 .2-.1.3c-.4.8-.3 1.7.3 2.3.6.6 1.5.7 2.1.2.6-.5.7-1.4.3-2.1-.4-.8-1.2-1.3-2.1-1.3-.2 0-.3-.1-.3-.2 0-.2.2-.3.3-.3.9 0 1.7.4 2.3 1 1.2 1.2 1.1 3.2-.2 4.4z"/>
-                  </svg>
-                  <span>Lose Weight</span>
-                </button>
-              </div>
-
-              <!-- Photo requirements checklist -->
-              <div class="phone-checklist">
-                <div class="checklist-title">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                  </svg>
-                  <span>Photo Requirements</span>
-                </div>
-                <div class="checklist-item">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                  <span>Front-facing body photo</span>
-                </div>
-                <div class="checklist-item">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                  <span>Good lighting, no harsh shadows</span>
-                </div>
-                <div class="checklist-item">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                  <span>Full body preferred</span>
-                </div>
-                <div class="checklist-item">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                  <span>Minimal background clutter</span>
-                </div>
-              </div>
-
-              <button class="btn-generate" onclick="setScreen('result')">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                  <path d="M9 21.5L12 16L17.5 13L12 10L9 4.5L6 10L0.5 13L6 16L9 21.5Z"/>
-                </svg>
-                <span>Generate My Transformation</span>
-              </button>
-              
-              <p class="disclaimer-text">
-                AI previews are estimates only. Results vary depending on training, nutrition, genetics, and consistency.
-              </p>
-            </div>
-
-            <!-- 4. RESULT SCREEN -->
+            <!-- 3. RESULT SCREEN -->
             <div id="screen-result" class="iphone-screen-view">
-              <div class="ai-badge">
-                <svg viewBox="0 0 24 24" width="8" height="8" fill="currentColor">
-                  <path d="M12 2l2.4 7.2h7.6l-6.2 4.5 2.4 7.3-6.2-4.6-6.2 4.6 2.4-7.3-6.2-4.5h7.6z"/>
-                </svg>
-                <span>AI Powered</span>
+              <div>
+                <div class="ai-badge">
+                  <svg viewBox="0 0 24 24" width="8" height="8" fill="currentColor">
+                    <path d="M12 2l2.4 7.2h7.6l-6.2 4.5 2.4 7.3-6.2-4.6-6.2 4.6 2.4-7.3-6.2-4.5h7.6z"/>
+                  </svg>
+                  <span>AI Powered</span>
+                </div>
+                <h3>Your Future Body</h3>
+                <p class="iphone-subtitle" style="margin-bottom:0;">Simulated results at the completion of your customized program.</p>
               </div>
-              <h3>Your Future Body</h3>
-              <p class="iphone-subtitle">Simulated results at the completion of your customized program.</p>
 
-              <!-- Before/After side by side -->
-              <div class="result-grid">
-                <div class="result-card">
-                  <img class="before-img-bind" src="">
-                  <div class="result-label before">Before</div>
-                </div>
-                <div class="result-card">
+              <!-- Before/After Comparison Slider -->
+              <div class="result-comparison-slider" id="comparison-slider">
+                <div class="slider-layer after-layer">
                   <img id="phone-preview-after" src="">
-                  <div class="result-label after">Future Body</div>
                 </div>
+                <div class="slider-layer before-layer" id="slider-before-layer">
+                  <img class="before-img-bind" src="">
+                </div>
+                <div class="slider-divider" id="slider-divider"></div>
+                <div class="slider-handle" id="slider-handle">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <polyline points="9 18 3 12 9 6"/>
+                    <polyline points="15 6 21 12 15 18"/>
+                  </svg>
+                </div>
+                <div class="result-label before">Before</div>
+                <div class="result-label after">Future Body</div>
               </div>
 
               <!-- Stats Cards -->
@@ -1627,7 +1783,7 @@
                 </div>
                 <div class="stat-mini-card">
                   <span class="stat-mini-label">Target Goal</span>
-                  <span class="stat-mini-value" id="result-stat-goal">💪 Build Muscle</span>
+                  <span class="stat-mini-value" id="result-stat-goal">Build Muscle</span>
                 </div>
               </div>
 
@@ -1645,6 +1801,16 @@
 
 
 
+          </div>
+
+          <!-- Drag-Ghost element: absolutely positioned over phone screen for first-play animation -->
+          <div id="drag-ghost" class="drag-ghost">
+            <img id="drag-ghost-img" src="" alt="photo">
+            <div class="drag-ghost-cursor">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 11V6a2 2 0 0 0-4 0v.5M14 6V5a2 2 0 0 0-4 0v.5M10 5.5V4a2 2 0 0 0-4 0v9.5l-2-2.3A2 2 0 0 0 3 12v.5A8 8 0 0 0 11 20h2a8 8 0 0 0 8-8V13a2 2 0 0 0-2-2h-.5a2 2 0 0 0-1.5.67V11a2 2 0 0 0-2-2h-.5"/>
+              </svg>
+            </div>
           </div>
 
         </div>
@@ -1674,7 +1840,8 @@
       beforePhoto: 'assets/before_default.png',
       afterPhoto: 'assets/after_default.png',
       goal: 'muscle', // 'muscle' | 'weight'
-      currentScreen: 'upload', // 'upload' | 'detecting' | 'validated' | 'result'
+      estimatedTime: '16 Weeks',
+      currentScreen: 'upload', // 'upload' | 'detecting' | 'result'
       savedTransformations: []
     };
 
@@ -1813,7 +1980,6 @@
         phoneMuscles.forEach(btn => btn.classList.add('active'));
         phoneWeights.forEach(btn => btn.classList.remove('active'));
 
-        document.getElementById('result-stat-time').textContent = '16 Weeks';
         document.getElementById('result-stat-goal').textContent = '💪 Build Muscle';
       } else {
         ctrlMuscle.classList.remove('active');
@@ -1821,8 +1987,13 @@
         phoneMuscles.forEach(btn => btn.classList.remove('active'));
         phoneWeights.forEach(btn => btn.classList.add('active'));
 
-        document.getElementById('result-stat-time').textContent = '12 Weeks';
         document.getElementById('result-stat-goal').textContent = '🔥 Burn Fat';
+      }
+
+      document.getElementById('result-stat-time').textContent = state.estimatedTime;
+      const timeInput = document.getElementById('ctrl-estimated-time');
+      if (timeInput && timeInput.value !== state.estimatedTime) {
+        timeInput.value = state.estimatedTime;
       }
 
       // 4. Sync Screen View displays
@@ -1836,7 +2007,7 @@
       const pills = document.querySelectorAll('.nav-pill');
       pills.forEach(p => p.classList.remove('active'));
       
-      const activePillIndex = ['upload', 'detecting', 'validated', 'result'].indexOf(state.currentScreen);
+      const activePillIndex = ['upload', 'detecting', 'result'].indexOf(state.currentScreen);
       if (activePillIndex !== -1 && pills[activePillIndex]) {
         pills[activePillIndex].classList.add('active');
       }
@@ -1852,15 +2023,22 @@
       syncUI();
     }
 
+    // Update Estimated Time from manual input
+    function updateEstimatedTime(value) {
+      state.estimatedTime = value;
+      document.getElementById('result-stat-time').textContent = value;
+    }
+
     // Set target goal
     function setGoal(goalName) {
       state.goal = goalName;
+      state.estimatedTime = goalName === 'muscle' ? '16 Weeks' : '12 Weeks';
       syncUI();
     }
 
     // Back navigation logic
     function goToPrevScreen() {
-      const order = ['upload', 'detecting', 'validated', 'result'];
+      const order = ['upload', 'detecting', 'result'];
       const curIdx = order.indexOf(state.currentScreen);
       if (curIdx > 0) {
         setScreen(order[curIdx - 1]);
@@ -1888,7 +2066,7 @@
     // "Play Full Flow" timeline playback
     function playFullFlow() {
       stopPlayback();
-      
+
       const playBtn = document.getElementById('play-btn');
       playBtn.classList.add('playing');
       playBtn.disabled = true;
@@ -1897,29 +2075,119 @@
         <span>Playing Flow...</span>
       `;
 
-      // Step 1: Upload screen - duration 1.5s
+      // ── Step 1: Always start from empty upload screen ─────────────────────
       setScreen('upload');
-      const uploadOverlay = document.querySelector('#screen-upload .analyzing-overlay');
-      uploadOverlay.style.display = 'none';
 
-      // Simulate a brief wait, then display 'Analyzing with AI...' spinner overlay (duration 1.0s)
+      const uploadBox          = document.querySelector('.phone-upload-box');
+      const phoneUploadInner   = document.getElementById('phone-upload-inner-before');
+      const phonePreviewUpload = document.getElementById('phone-preview-before-upload');
+      const uploadOverlay      = document.querySelector('#screen-upload .analyzing-overlay');
+      const validatedContent   = document.querySelector('.validated-content');
+      const validationBadge    = document.querySelector('.validation-badge-overlay');
+
+      // Force empty / pristine state
+      uploadBox.classList.remove('has-image', 'drag-photo-anim', 'receiving-drop');
+      phonePreviewUpload.style.display = 'none';
+      phoneUploadInner.style.display   = 'flex';
+      uploadOverlay.style.display      = 'none';
+      if (validatedContent) { validatedContent.classList.add('hidden'); validatedContent.classList.remove('fadeInSlow'); }
+      if (validationBadge)    validationBadge.classList.add('hidden');
+
+      // ── Step 2: Prepare drag ghost ────────────────────────────────────────
+      const ghost    = document.getElementById('drag-ghost');
+      const ghostImg = document.getElementById('drag-ghost-img');
+      ghostImg.src = state.beforePhoto || fallbackSVGs.before;
+
+      // Reset ghost: invisible at top-left corner of phone
+      ghost.style.transition = 'none';
+      ghost.style.opacity    = '0';
+      ghost.style.transform  = 'rotate(-10deg) scale(0.82)';
+      ghost.style.top        = '9%';
+      ghost.style.left       = '10%';
+
+      // ── Step 3: Ghost fades in (t = 550ms) ───────────────────────────────
+      playbackTimeouts.push(setTimeout(() => {
+        ghost.style.transition = 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        ghost.style.opacity    = '1';
+        ghost.style.transform  = 'rotate(-6deg) scale(1)';
+      }, 550));
+
+      // ── Step 4: Ghost floats up slightly (hovering feel, t = 1050ms) ──────
+      playbackTimeouts.push(setTimeout(() => {
+        ghost.style.transition = 'top 0.22s ease, left 0.22s ease, transform 0.22s ease';
+        ghost.style.top        = '7%';
+        ghost.style.left       = '13%';
+        ghost.style.transform  = 'rotate(-5deg) scale(1.03)';
+      }, 1050));
+
+      // ── Step 5: Ghost drags toward the upload box (t = 1300ms) ───────────
+      playbackTimeouts.push(setTimeout(() => {
+        ghost.style.transition = 'top 0.78s cubic-bezier(0.25, 0.46, 0.45, 0.94), left 0.78s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.78s ease';
+        ghost.style.top        = '29%';
+        ghost.style.left       = '33%';
+        ghost.style.transform  = 'rotate(-1deg) scale(1.06)';
+      }, 1300));
+
+      // ── Step 6: Drop! Photo lands in box (t = 2120ms) ────────────────────
+      playbackTimeouts.push(setTimeout(() => {
+        // Ghost disappears on impact
+        ghost.style.transition = 'opacity 0.22s ease, transform 0.22s ease';
+        ghost.style.opacity    = '0';
+        ghost.style.transform  = 'rotate(0deg) scale(0.72)';
+
+        // Upload box pulses to receive the photo
+        uploadBox.classList.add('receiving-drop');
+
+        // Photo pops into the box with a short delay
+        playbackTimeouts.push(setTimeout(() => {
+          phonePreviewUpload.src           = state.beforePhoto || fallbackSVGs.before;
+          phonePreviewUpload.style.display = 'block';
+          phoneUploadInner.style.display   = 'none';
+          uploadBox.classList.add('has-image');
+        }, 170));
+
+        playbackTimeouts.push(setTimeout(() => {
+          uploadBox.classList.remove('receiving-drop');
+        }, 800));
+      }, 2120));
+
+      // ── Step 7: Show "Analyzing with AI..." spinner (t = 2800ms) ──────────
       playbackTimeouts.push(setTimeout(() => {
         uploadOverlay.style.display = 'flex';
-      }, 500));
+      }, 2800));
 
-      // Step 2: Detecting screen - duration 4.5s
+      // ── Step 8: Show validated ✓ badge (t = 4000ms) ───────────────────────
       playbackTimeouts.push(setTimeout(() => {
-        uploadOverlay.style.display = 'none'; // reset overlay state
+        uploadOverlay.style.display = 'none';
+        if (validatedContent) {
+          validatedContent.classList.remove('hidden');
+          validatedContent.classList.add('fadeInSlow');
+        }
+        if (validationBadge) validationBadge.classList.remove('hidden');
+      }, 4000));
+
+      // ── Step 9: Wait 2s, then simulate "Generate" button press (t = 6000ms)
+      const genBtn = document.querySelector('#screen-upload .btn-generate-transform');
+      if (genBtn) {
+        playbackTimeouts.push(setTimeout(() => {
+          genBtn.classList.add('simulated-click');
+          playbackTimeouts.push(setTimeout(() => {
+            genBtn.classList.remove('simulated-click');
+          }, 260));
+        }, 6000));
+      }
+
+      // ── Step 10: Detecting screen + progress bar (t = 6300ms) ─────────────
+      playbackTimeouts.push(setTimeout(() => {
         setScreen('detecting');
 
-        // Animate the progress bar from 0 to 100% over the 4.5s
         const fill = document.querySelector('.progress-fill');
         const text = document.querySelector('.progress-percent');
         fill.style.width = '0%';
         text.textContent = '0%';
 
-        const start = Date.now();
-        const duration = 4300; // slightly shorter than 4500ms to allow text buffering
+        const start    = Date.now();
+        const duration = 3800;
 
         progressInterval = setInterval(() => {
           const elapsed = Date.now() - start;
@@ -1931,18 +2199,13 @@
             progressInterval = null;
           }
         }, 40);
-      }, 1500));
+      }, 6300));
 
-      // Step 3: Validated screen - duration 2.5s
-      playbackTimeouts.push(setTimeout(() => {
-        setScreen('validated');
-      }, 1500 + 4500));
-
-      // Step 4: Result screen - final view (stay)
+      // ── Step 11: Result screen – final view (t = 10300ms) ─────────────────
       playbackTimeouts.push(setTimeout(() => {
         setScreen('result');
         stopPlayback();
-      }, 1500 + 4500 + 2500));
+      }, 10300));
     }
 
     // Stop current flow sequence playback
@@ -1963,6 +2226,7 @@
         </svg>
         <span>Play Full Flow</span>
       `;
+      syncUI();
     }
 
     // Image compression logic to keep localStorage size minimal
@@ -2151,6 +2415,83 @@
     function shareResult() {
       showToast("Result link copied to clipboard! 📤");
     }
+
+    // ─── Comparison Slider Logic ───
+    (function initComparisonSlider() {
+      let isDragging = false;
+      let sliderRect = null;
+      let sliderHintPlayed = false;
+
+      const sliderContainer = document.getElementById('comparison-slider');
+      const sliderBeforeLayer = document.getElementById('slider-before-layer');
+      const sliderDivider = document.getElementById('slider-divider');
+      const sliderHandle = document.getElementById('slider-handle');
+
+      function updateSliderPosition(percentage) {
+        if (!sliderBeforeLayer) return;
+        const pct = Math.max(0, Math.min(100, percentage));
+        sliderBeforeLayer.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+        sliderDivider.style.left = `${pct}%`;
+        sliderHandle.style.left = `${pct}%`;
+      }
+
+      function getPercentage(clientX) {
+        if (!sliderRect) return 50;
+        const x = clientX - sliderRect.left;
+        return (x / sliderRect.width) * 100;
+      }
+
+      function onPointerDown(e) {
+        if (!sliderContainer) return;
+        isDragging = true;
+        sliderRect = sliderContainer.getBoundingClientRect();
+        sliderContainer.classList.remove('slider-hint');
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        updateSliderPosition(getPercentage(clientX));
+      }
+
+      function onPointerMove(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        updateSliderPosition(getPercentage(clientX));
+      }
+
+      function onPointerUp() {
+        isDragging = false;
+        sliderRect = null;
+      }
+
+      if (sliderContainer) {
+        // Mouse events
+        sliderContainer.addEventListener('mousedown', onPointerDown);
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('mouseup', onPointerUp);
+
+        // Touch events
+        sliderContainer.addEventListener('touchstart', onPointerDown, { passive: true });
+        window.addEventListener('touchmove', onPointerMove, { passive: false });
+        window.addEventListener('touchend', onPointerUp);
+      }
+
+      // Monkey-patch setScreen to play hint animation on first result view
+      const _originalSetScreen = setScreen;
+      setScreen = function(screenName) {
+        _originalSetScreen(screenName);
+        if (screenName === 'result' && !sliderHintPlayed) {
+          sliderHintPlayed = true;
+          if (sliderContainer) {
+            // Reset slider to 50% before animating
+            updateSliderPosition(50);
+            sliderContainer.classList.add('slider-hint');
+            setTimeout(() => {
+              sliderContainer.classList.remove('slider-hint');
+            }, 2000);
+          }
+        }
+      };
+    })();
+
   </script>
 </body>
 </html>
