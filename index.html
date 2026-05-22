@@ -1,0 +1,2156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GymGuide AI Transformation Simulator</title>
+  <!-- Import Outfit and Inter fonts for a premium typography stack -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-card: #141414;
+      --bg-input: #1c1c1c;
+      --primary-red: #ff0000;
+      --primary-red-hover: #cc0000;
+      --primary-red-glow: rgba(255, 0, 0, 0.4);
+      --success-green: #22c55e;
+      --success-green-glow: rgba(34, 197, 94, 0.3);
+      --text-main: #ffffff;
+      --text-muted: #a0a0a0;
+      --text-dark: #666666;
+      --border-radius-sm: 8px;
+      --border-radius-md: 12px;
+      --border-radius-pill: 20px;
+      --iphone-bezel: 44px;
+      --transition-speed: 0.25s;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(255, 0, 0, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(34, 197, 94, 0.04) 0px, transparent 50%);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      overflow-x: hidden;
+    }
+
+    /* Outer layout container */
+    .dashboard-container {
+      width: 100%;
+      max-width: 1080px;
+      background: rgba(12, 12, 12, 0.6);
+      border: 1px solid #1f1f1f;
+      border-radius: 24px;
+      padding: 32px;
+      display: flex;
+      gap: 48px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(20px);
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Outfit', -apple-system, sans-serif;
+      font-weight: 700;
+    }
+
+    /* LEFT PANEL - Studio Controls */
+    .controls-panel {
+      flex: 1.3;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .controls-header {
+      border-bottom: 1px solid #222;
+      padding-bottom: 12px;
+    }
+
+    .controls-header h2 {
+      font-size: 24px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #fff 30%, #888 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .controls-header p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* File upload boxes styling */
+    .upload-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .upload-box-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .upload-box {
+      width: 100%;
+      height: 130px;
+      background: var(--bg-card);
+      border: 1.5px dashed #2a2a2a;
+      border-radius: var(--border-radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all var(--transition-speed) ease;
+    }
+
+    .upload-box:hover {
+      border-color: var(--primary-red);
+      background: #181818;
+      transform: translateY(-2px);
+    }
+
+    .upload-box.has-image {
+      border-style: solid;
+      border-color: #2a2a2a;
+    }
+
+    .upload-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .upload-box-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      padding: 12px;
+      color: var(--text-muted);
+    }
+
+    .upload-box:hover .upload-box-inner {
+      color: var(--text-main);
+    }
+
+    .upload-icon {
+      width: 28px;
+      height: 28px;
+      color: var(--primary-red);
+      opacity: 0.85;
+      transition: transform var(--transition-speed);
+    }
+
+    .upload-box:hover .upload-icon {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+
+    .upload-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .upload-subtitle {
+      font-size: 10px;
+      opacity: 0.7;
+    }
+
+    .upload-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      padding: 6px 0;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-main);
+      opacity: 0;
+      transition: opacity var(--transition-speed);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .upload-box:hover .upload-overlay {
+      opacity: 1;
+    }
+
+    /* Goal selector toggles */
+    .goal-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .goal-btn {
+      padding: 12px 20px;
+      border-radius: var(--border-radius-pill);
+      border: 1px solid #222;
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .goal-btn:hover {
+      border-color: #444;
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+
+    /* Muscle: Red active */
+    .goal-btn.muscle-btn.active {
+      background: var(--primary-red);
+      color: #fff;
+      border-color: var(--primary-red);
+      box-shadow: 0 4px 18px var(--primary-red-glow);
+    }
+
+    /* Weight: White active */
+    .goal-btn.weight-btn.active {
+      background: #ffffff;
+      color: #000000;
+      border-color: #ffffff;
+      box-shadow: 0 4px 18px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Screen navigation pills */
+    .nav-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nav-pill {
+      padding: 8px 16px;
+      border-radius: var(--border-radius-pill);
+      border: 1px solid #222;
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-pill:hover {
+      border-color: #333;
+      color: var(--text-main);
+    }
+
+    .nav-pill.active {
+      background: var(--primary-red);
+      color: #fff;
+      border-color: var(--primary-red);
+      box-shadow: 0 2px 10px var(--primary-red-glow);
+    }
+
+    /* Action buttons */
+    .actions-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn-action {
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--border-radius-pill);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all var(--transition-speed);
+    }
+
+    .btn-play {
+      background: var(--primary-red);
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 20px var(--primary-red-glow);
+    }
+
+    .btn-play:hover {
+      background: var(--primary-red-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(255, 0, 0, 0.5);
+    }
+
+    .btn-play:active {
+      transform: translateY(0);
+    }
+
+    .btn-play.playing {
+      background: #333 !important;
+      color: #888 !important;
+      box-shadow: none !important;
+      cursor: not-allowed;
+    }
+
+    .btn-save {
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid #2d2d2d;
+    }
+
+    .btn-save:hover {
+      background: #181818;
+      border-color: #444;
+      transform: translateY(-2px);
+    }
+
+    /* Saved transformations list */
+    .saved-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .saved-list {
+      max-height: 200px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 4px;
+    }
+
+    /* Custom scrollbar for saved list */
+    .saved-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .saved-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .saved-list::-webkit-scrollbar-thumb {
+      background: #2a2a2a;
+      border-radius: 3px;
+    }
+    .saved-list::-webkit-scrollbar-thumb:hover {
+      background: #3a3a3a;
+    }
+
+    .saved-empty {
+      text-align: center;
+      padding: 24px;
+      background: #0d0d0d;
+      border: 1px dashed #222;
+      border-radius: var(--border-radius-md);
+      color: var(--text-dark);
+      font-size: 12px;
+    }
+
+    .saved-item {
+      background: var(--bg-card);
+      border: 1px solid #222;
+      border-radius: var(--border-radius-md);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+      position: relative;
+    }
+
+    .saved-item:hover {
+      background: #1c1c1c;
+      border-color: #333;
+    }
+
+    .saved-item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .saved-thumbs {
+      display: flex;
+      background: #000;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #2a2a2a;
+      width: 54px;
+      height: 36px;
+    }
+
+    .saved-thumbs img {
+      width: 27px;
+      height: 36px;
+      object-fit: cover;
+    }
+
+    .saved-thumbs img:first-child {
+      border-right: 1px solid #111;
+    }
+
+    .saved-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .saved-goal {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .saved-time {
+      font-size: 9px;
+      color: var(--text-dark);
+    }
+
+    .delete-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      color: var(--text-muted);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+    }
+
+    .delete-btn:hover {
+      background: var(--primary-red);
+      color: white;
+      border-color: var(--primary-red);
+    }
+
+    /* RIGHT SECTION - iPhone Mockup */
+    .mockup-panel {
+      flex: 0.9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #14ff00;
+      border-radius: 16px;
+    }
+
+    .iphone-container {
+      width: 280px;
+      height: 570px;
+      background: #000000;
+      border-radius: var(--iphone-bezel);
+      padding: 8px;
+      position: relative;
+      box-shadow: 
+        0 25px 60px rgba(0, 0, 0, 0.9), 
+        inset 0 0 4px rgba(255, 255, 255, 0.2);
+      border: 3.5px solid #2c2c2c;
+      outline: 1px solid #444;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    .iphone-screen {
+      width: 100%;
+      height: 100%;
+      background: #0a0a0a;
+      border-radius: 36px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    /* Dynamic Island notch */
+    .iphone-dynamic-island {
+      width: 82px;
+      height: 22px;
+      background: #000000;
+      border-radius: 12px;
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+
+    /* Status Bar */
+    .iphone-status-bar {
+      height: 32px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: 600;
+      color: #ffffff;
+      z-index: 99;
+      margin-top: 6px;
+    }
+
+    .status-time {
+      letter-spacing: -0.1px;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status-icon {
+      height: 8px;
+      fill: currentColor;
+    }
+
+    /* Navigation Bar */
+    .iphone-nav-bar {
+      height: 40px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      z-index: 98;
+    }
+
+    .iphone-nav-back {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+    }
+
+    .iphone-nav-back:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .iphone-nav-back svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .iphone-nav-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.2px;
+    }
+
+    /* Content Area */
+    .iphone-content {
+      flex: 1;
+      padding: 12px 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Hide scrollbars inside iPhone screen */
+    .iphone-content::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Individual Screens */
+    .iphone-screen-view {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      height: 100%;
+      opacity: 0;
+      animation: screenFadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .iphone-screen-view.active {
+      display: flex;
+    }
+
+    @keyframes screenFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* AI Badge */
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 7px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 0, 0, 0.3);
+      background: rgba(255, 0, 0, 0.06);
+      color: var(--primary-red);
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      align-self: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .iphone-content h3 {
+      font-size: 20px;
+      line-height: 1.15;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .iphone-subtitle {
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+
+    /* Upload Screen View Elements */
+    .phone-upload-box {
+      width: 100%;
+      height: 130px;
+      background: #111;
+      border: 1.5px dashed #262626;
+      border-radius: var(--border-radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 6px;
+      color: var(--text-muted);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .phone-upload-box.has-image {
+      border-style: solid;
+      border-color: #2a2a2a;
+    }
+
+    .phone-upload-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .phone-upload-icon {
+      width: 24px;
+      height: 24px;
+      color: var(--primary-red);
+    }
+
+    .phone-upload-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .phone-upload-subtext {
+      font-size: 9px;
+      opacity: 0.7;
+    }
+
+    .analyzing-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .analyzing-overlay span {
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Spinner animation */
+    .spinner {
+      width: 22px;
+      height: 22px;
+      border: 2.5px solid rgba(255, 0, 0, 0.1);
+      border-top-color: var(--primary-red);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .phone-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    /* Inline Phone Goal Toggle */
+    .phone-goal-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .phone-goal-btn {
+      padding: 9px;
+      border-radius: var(--border-radius-md);
+      font-size: 10px;
+      font-weight: 700;
+      border: 1px solid #222;
+      background: #111;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+    }
+
+    .phone-goal-btn.muscle-btn.active {
+      background: var(--primary-red);
+      color: #fff;
+      border-color: var(--primary-red);
+      box-shadow: 0 4px 10px rgba(255, 0, 0, 0.3);
+    }
+
+    .phone-goal-btn.weight-btn.active {
+      background: #ffffff;
+      color: #000;
+      border-color: #ffffff;
+      box-shadow: 0 4px 10px rgba(255, 255, 255, 0.15);
+    }
+
+    .phone-goal-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Checklist of requirements */
+    .phone-checklist {
+      background: #111;
+      border: 1px solid #1f1f1f;
+      border-radius: var(--border-radius-md);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .checklist-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .checklist-title svg {
+      width: 12px;
+      height: 12px;
+      color: var(--primary-red);
+    }
+
+    .checklist-item {
+      font-size: 9px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .checklist-item svg {
+      width: 10px;
+      height: 10px;
+      color: var(--success-green);
+      flex-shrink: 0;
+    }
+
+    /* Generate My Transformation button */
+    .btn-generate-transform {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: var(--border-radius-pill);
+      border: none;
+      background: var(--primary-red);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+      box-shadow: 0 6px 24px var(--primary-red-glow);
+      transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: 0.3px;
+    }
+
+    .btn-generate-transform:hover {
+      background: var(--primary-red-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255, 0, 0, 0.5);
+    }
+
+    .btn-generate-transform:active {
+      transform: translateY(0);
+    }
+
+    .btn-generate-transform svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    /* Detecting Screen View Elements */
+    .detecting-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      padding-top: 10px;
+    }
+
+    .detecting-circle-container {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin-bottom: 16px;
+    }
+
+    .detecting-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid var(--primary-red);
+      overflow: hidden;
+      box-shadow: 0 0 16px var(--primary-red-glow);
+      position: relative;
+      background: #111;
+    }
+
+    .detecting-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 25%;
+    }
+
+    .scanning-line {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--primary-red);
+      box-shadow: 0 0 8px var(--primary-red), 0 0 3px var(--primary-red);
+      animation: scan-anim 2s infinite ease-in-out;
+      z-index: 5;
+    }
+
+    @keyframes scan-anim {
+      0% { top: 10%; }
+      50% { top: 90%; }
+      100% { top: 10%; }
+    }
+
+    .sparkle-badge {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: var(--primary-red);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      border: 2px solid #000;
+      z-index: 10;
+      animation: pulse-glow 1.5s infinite;
+    }
+
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.6); }
+      70% { box-shadow: 0 0 0 6px rgba(255, 0, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+    }
+
+    .sparkle-badge svg {
+      width: 12px;
+      height: 12px;
+      fill: currentColor;
+    }
+
+    .detecting-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .detecting-sub {
+      font-size: 10px;
+      color: var(--text-dark);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .progress-container {
+      width: 100%;
+      padding: 0 8px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: #1a1a1a;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 6px;
+      border: 1px solid rgba(255,255,255,0.02);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-red) 0%, #ff5555 100%);
+      width: 0%;
+      border-radius: 10px;
+    }
+
+    .progress-percent {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .detecting-footer {
+      font-size: 9px;
+      color: var(--text-dark);
+      margin-top: auto;
+      text-align: center;
+      padding-top: 16px;
+    }
+
+    /* Validated Screen View Elements */
+    .validation-badge-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(34, 197, 94, 0.95);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      padding: 8px 14px;
+      border-radius: var(--border-radius-pill);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 10;
+      box-shadow: 0 4px 15px var(--success-green-glow);
+    }
+
+    .validation-badge-overlay svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .phone-upload-box.validated {
+      border: 1.5px solid var(--success-green);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.15);
+    }
+
+    .phone-change-tag {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 8px;
+      font-weight: 700;
+      color: var(--text-main);
+      border: 1px solid rgba(255,255,255,0.05);
+      z-index: 9;
+    }
+
+    .btn-generate {
+      width: 100%;
+      padding: 12px;
+      border-radius: var(--border-radius-pill);
+      background: var(--primary-red);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 12px;
+      box-shadow: 0 4px 14px var(--primary-red-glow);
+      transition: all var(--transition-speed);
+    }
+
+    .btn-generate:hover {
+      background: var(--primary-red-hover);
+    }
+
+    .disclaimer-text {
+      font-size: 8px;
+      color: var(--text-dark);
+      text-align: center;
+      line-height: 1.35;
+      margin-top: 8px;
+    }
+
+    /* Result Screen View Elements */
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .result-card {
+      position: relative;
+      height: 155px;
+      background: #111;
+      border-radius: var(--border-radius-md);
+      overflow: hidden;
+      border: 1px solid #1f1f1f;
+    }
+
+    .result-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .result-label {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .result-label.before {
+      background: rgba(0, 0, 0, 0.65);
+      color: var(--text-muted);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .result-label.after {
+      background: var(--primary-red);
+      color: white;
+      box-shadow: 0 2px 6px var(--primary-red-glow);
+    }
+
+    .result-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .stat-mini-card {
+      background: #111;
+      border: 1px solid #1f1f1f;
+      border-radius: var(--border-radius-md);
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stat-mini-label {
+      font-size: 7.5px;
+      font-weight: 700;
+      color: var(--text-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-mini-value {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-share {
+      width: 100%;
+      padding: 11px;
+      border-radius: var(--border-radius-pill);
+      background: var(--primary-red);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 14px var(--primary-red-glow);
+      transition: all var(--transition-speed);
+    }
+
+    .btn-share:hover {
+      background: var(--primary-red-hover);
+    }
+
+    /* Toast notifications styling */
+    .toast-notification {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(20, 20, 20, 0.95);
+      border: 1px solid #333;
+      padding: 12px 24px;
+      border-radius: var(--border-radius-pill);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .toast-notification.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 900px) {
+      body {
+        padding: 20px 10px;
+      }
+
+      .dashboard-container {
+        flex-direction: column;
+        gap: 32px;
+        padding: 20px;
+      }
+
+      .controls-panel {
+        width: 100%;
+      }
+
+      .mockup-panel {
+        width: 100%;
+        padding-top: 10px;
+        border-top: 1px solid #222;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-container">
+    
+    <!-- LEFT PANEL: STUDIO CONTROLS -->
+    <div class="controls-panel">
+      
+      <div class="controls-header">
+        <h2>Studio Controls</h2>
+        <p>Preview and configure your AI gym transformation flow</p>
+      </div>
+
+      <!-- File Upload Blocks -->
+      <div class="upload-row">
+        <div class="upload-box-wrapper">
+          <span class="section-label">Before Photo</span>
+          <div class="upload-box" id="ctrl-upload-before" onclick="document.getElementById('file-input-before').click()">
+            <input type="file" id="file-input-before" accept="image/*" style="display: none;" onchange="handleFileChange(event, 'before')">
+            <div class="upload-box-inner" id="ctrl-upload-inner-before">
+              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              <span class="upload-title">Upload before</span>
+              <span class="upload-subtitle">Change photo</span>
+            </div>
+            <img id="ctrl-preview-before" src="" style="display: none;">
+            <div class="upload-overlay">Click to change</div>
+          </div>
+        </div>
+
+        <div class="upload-box-wrapper">
+          <span class="section-label">After Photo (Result)</span>
+          <div class="upload-box" id="ctrl-upload-after" onclick="document.getElementById('file-input-after').click()">
+            <input type="file" id="file-input-after" accept="image/*" style="display: none;" onchange="handleFileChange(event, 'after')">
+            <div class="upload-box-inner" id="ctrl-upload-inner-after">
+              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              <span class="upload-title">Upload after</span>
+              <span class="upload-subtitle">Change photo</span>
+            </div>
+            <img id="ctrl-preview-after" src="" style="display: none;">
+            <div class="upload-overlay">Click to change</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Goal Selector -->
+      <div>
+        <span class="section-label">Goal</span>
+        <div class="goal-row">
+          <button class="goal-btn muscle-btn active" onclick="setGoal('muscle')">
+            <span>💪 Build Muscle</span>
+          </button>
+          <button class="goal-btn weight-btn" onclick="setGoal('weight')">
+            <span>🔥 Lose Weight</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scene Navigation Pills -->
+      <div>
+        <span class="section-label">Preview Screen</span>
+        <div class="nav-pills">
+          <button class="nav-pill active" onclick="setScreen('upload')">Upload</button>
+          <button class="nav-pill" onclick="setScreen('detecting')">Detecting</button>
+          <button class="nav-pill" onclick="setScreen('validated')">Validated</button>
+          <button class="nav-pill" onclick="setScreen('result')">Result</button>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="actions-stack">
+        <button id="play-btn" class="btn-action btn-play" onclick="playFullFlow()">
+          <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <span>Play Full Flow</span>
+        </button>
+        
+        <button class="btn-action btn-save" onclick="saveTransformation()">
+          <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          <span>Save this transformation</span>
+        </button>
+      </div>
+
+      <!-- Saved Transformations List -->
+      <div class="saved-container">
+        <span class="section-label">Saved Transformations</span>
+        <div class="saved-list" id="saved-list">
+          <div class="saved-empty">No saved transformations yet</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT SECTION: IPHONE 14 PRO MOCKUP -->
+    <div class="mockup-panel">
+      
+      <div class="iphone-container">
+        
+        <div class="iphone-screen">
+          
+          <!-- Dynamic Island Notch -->
+          <div class="iphone-dynamic-island"></div>
+
+          <!-- Status Bar -->
+          <div class="iphone-status-bar">
+            <span class="status-time" id="iphone-time">09:41</span>
+            <div class="status-icons">
+              <!-- Signal strength icon -->
+              <svg class="status-icon" viewBox="0 0 16 12" width="12">
+                <path d="M1 9h2v2H1zm3-2h2v4H4zm3-2h2v6H7zm3-2h2v8h-2zm3-2h2v10h-2z"/>
+              </svg>
+              <!-- Wifi Icon -->
+              <svg class="status-icon" viewBox="0 0 16 12" width="12">
+                <path d="M8 10a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm-4.2-3.8c.8-.8 1.9-1.2 3-1.2s2.2.4 3 1.2c.2.2.5.2.7 0 .2-.2.2-.5 0-.7-1-1-2.3-1.5-3.7-1.5s-2.7.5-3.7 1.5c-.2.2-.2.5 0 .7.2.2.5.2.7 0zm-2.8-2.8c1.5-1.5 3.6-2.4 5.8-2.4s4.3.9 5.8 2.4c.2.2.5.2.7 0s.2-.5 0-.7C11.5 1.2 9.2.2 6.8.2.3.2 2 .2.2 2.2c-.2.2-.2.5 0 .7.2.2.5.2.7 0z"/>
+              </svg>
+              <!-- Battery icon -->
+              <svg class="status-icon" viewBox="0 0 20 12" width="14">
+                <rect x="1" y="2" width="15" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                <rect x="3" y="4" width="11" height="4" rx="0.5" fill="currentColor"/>
+                <path d="M17 4h1v4h-1z" fill="currentColor"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Navigation Bar -->
+          <div class="iphone-nav-bar">
+            <button class="iphone-nav-back" onclick="goToPrevScreen()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </button>
+            <span class="iphone-nav-title">AI Transformation</span>
+            <!-- Empty element for alignment symmetry -->
+            <div style="width: 24px;"></div>
+          </div>
+
+          <!-- iPhone Content views -->
+          <div class="iphone-content">
+
+            <!-- 1. UPLOAD SCREEN -->
+            <div id="screen-upload" class="iphone-screen-view active">
+              <div class="ai-badge">
+                <svg viewBox="0 0 24 24" width="8" height="8" fill="currentColor">
+                  <path d="M12 2l2.4 7.2h7.6l-6.2 4.5 2.4 7.3-6.2-4.6-6.2 4.6 2.4-7.3-6.2-4.5h7.6z"/>
+                </svg>
+                <span>AI Powered</span>
+              </div>
+              <h3>See Your Future Body</h3>
+              <p class="iphone-subtitle">Preview a realistic AI-powered body transformation based on your physique and goals.</p>
+              
+              <div class="phone-upload-box" onclick="document.getElementById('file-input-before').click()">
+                <div class="phone-upload-inner" id="phone-upload-inner-before">
+                  <svg class="phone-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
+                  <span class="phone-upload-text">Upload Your Photo</span>
+                  <span class="phone-upload-subtext">Camera or Gallery</span>
+                </div>
+                <img id="phone-preview-before-upload" src="" style="display:none;">
+                <div class="analyzing-overlay">
+                  <div class="spinner"></div>
+                  <span>Analyzing with AI...</span>
+                </div>
+              </div>
+
+              <span class="phone-section-label">Transformation Goal</span>
+              <div class="phone-goal-toggle">
+                <button class="phone-goal-btn muscle-btn active" onclick="setGoal('muscle')">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <!-- Dumbbell SVG icon -->
+                    <path d="M5 9c-.6 0-1 .4-1 1v4c0 .6.4 1 1 1h1V9H5zm14 0h-1v6h1c.6 0 1-.4 1-1v-4c0-.6-.4-1-1-1zM9 4c-.6 0-1 .4-1 1v14c0 .6.4 1 1 1h1V4H9zm6 0h-1v16h1c.6 0 1-.4 1-1V5c0-.6-.4-1-1-1zm-4 4h2v8h-2V8z"/>
+                  </svg>
+                  <span>Build Muscle</span>
+                </button>
+                <button class="phone-goal-btn weight-btn" onclick="setGoal('weight')">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <!-- Flame SVG icon -->
+                    <path d="M12 2C8.3 5.4 6 9.4 6 12.8c0 3.3 2.7 6 6 6s6-2.7 6-6c0-3.4-2.3-7.4-6-10.8zm2.5 13.5c-.8.8-2 1.2-3.1 1-1.1-.2-2-1-2.4-2.1-.4-1.2.1-2.5 1.1-3.2.1-.1.2-.1.2 0s0 .2-.1.3c-.4.8-.3 1.7.3 2.3.6.6 1.5.7 2.1.2.6-.5.7-1.4.3-2.1-.4-.8-1.2-1.3-2.1-1.3-.2 0-.3-.1-.3-.2 0-.2.2-.3.3-.3.9 0 1.7.4 2.3 1 1.2 1.2 1.1 3.2-.2 4.4z"/>
+                  </svg>
+                  <span>Lose Weight</span>
+                </button>
+              </div>
+
+              <!-- Photo requirements checklist -->
+              <div class="phone-checklist">
+                <div class="checklist-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  </svg>
+                  <span>Photo Requirements</span>
+                </div>
+                <div class="checklist-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  <span>Front-facing body photo</span>
+                </div>
+                <div class="checklist-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  <span>Good lighting, no harsh shadows</span>
+                </div>
+                <div class="checklist-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  <span>Full body preferred</span>
+                </div>
+                <div class="checklist-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  <span>Minimal background clutter</span>
+                </div>
+              </div>
+
+              <!-- Generate My Transformation Button -->
+              <button class="btn-generate-transform" onclick="playFullFlow()">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2Z"/>
+                  <path d="M5 2L3.69 5.31L0 5.59L2.66 7.93L1.82 11.5L5 9.54L8.18 11.5L7.34 7.93L10 5.59L6.31 5.31L5 2Z" transform="scale(0.5) translate(2, 0)"/>
+                </svg>
+                <span>Generate My Transformation</span>
+              </button>
+            </div>
+
+            <!-- 2. DETECTING SCREEN -->
+            <div id="screen-detecting" class="iphone-screen-view">
+              <div class="detecting-wrap">
+                <div class="detecting-circle-container">
+                  <div class="detecting-circle">
+                    <img class="before-img-bind" src="">
+                    <div class="scanning-line"></div>
+                  </div>
+                  <div class="sparkle-badge">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M9 21.5L12 16L17.5 13L12 10L9 4.5L6 10L0.5 13L6 16L9 21.5Z"/>
+                    </svg>
+                  </div>
+                </div>
+                
+                <h4 class="detecting-title">Detecting body proportions...</h4>
+                <p class="detecting-sub">Please keep the app open</p>
+                
+                <div class="progress-container">
+                  <div class="progress-track">
+                    <div class="progress-fill"></div>
+                  </div>
+                  <div class="progress-percent">0%</div>
+                </div>
+              </div>
+              <div class="detecting-footer">
+                Powered by GymGuide AI
+              </div>
+            </div>
+
+            <!-- 3. VALIDATED SCREEN -->
+            <div id="screen-validated" class="iphone-screen-view">
+              <div class="ai-badge">
+                <svg viewBox="0 0 24 24" width="8" height="8" fill="currentColor">
+                  <path d="M12 2l2.4 7.2h7.6l-6.2 4.5 2.4 7.3-6.2-4.6-6.2 4.6 2.4-7.3-6.2-4.5h7.6z"/>
+                </svg>
+                <span>AI Powered</span>
+              </div>
+              <h3>See Your Future Body</h3>
+              <p class="iphone-subtitle">Preview a realistic AI-powered body transformation based on your physique and goals.</p>
+
+              <div class="phone-upload-box validated" onclick="document.getElementById('file-input-before').click()">
+                <div class="phone-change-tag">Change</div>
+                <div class="validation-badge-overlay">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  <span>Photo validated ✓</span>
+                </div>
+                <img class="before-img-bind" src="">
+              </div>
+
+              <span class="phone-section-label">Transformation Goal</span>
+              <div class="phone-goal-toggle">
+                <button class="phone-goal-btn muscle-btn active" onclick="setGoal('muscle')">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M5 9c-.6 0-1 .4-1 1v4c0 .6.4 1 1 1h1V9H5zm14 0h-1v6h1c.6 0 1-.4 1-1v-4c0-.6-.4-1-1-1zM9 4c-.6 0-1 .4-1 1v14c0 .6.4 1 1 1h1V4H9zm6 0h-1v16h1c.6 0 1-.4 1-1V5c0-.6-.4-1-1-1zm-4 4h2v8h-2V8z"/>
+                  </svg>
+                  <span>Build Muscle</span>
+                </button>
+                <button class="phone-goal-btn weight-btn" onclick="setGoal('weight')">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C8.3 5.4 6 9.4 6 12.8c0 3.3 2.7 6 6 6s6-2.7 6-6c0-3.4-2.3-7.4-6-10.8zm2.5 13.5c-.8.8-2 1.2-3.1 1-1.1-.2-2-1-2.4-2.1-.4-1.2.1-2.5 1.1-3.2.1-.1.2-.1.2 0s0 .2-.1.3c-.4.8-.3 1.7.3 2.3.6.6 1.5.7 2.1.2.6-.5.7-1.4.3-2.1-.4-.8-1.2-1.3-2.1-1.3-.2 0-.3-.1-.3-.2 0-.2.2-.3.3-.3.9 0 1.7.4 2.3 1 1.2 1.2 1.1 3.2-.2 4.4z"/>
+                  </svg>
+                  <span>Lose Weight</span>
+                </button>
+              </div>
+
+              <!-- Photo requirements checklist -->
+              <div class="phone-checklist">
+                <div class="checklist-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  </svg>
+                  <span>Photo Requirements</span>
+                </div>
+                <div class="checklist-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  <span>Front-facing body photo</span>
+                </div>
+                <div class="checklist-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  <span>Good lighting, no harsh shadows</span>
+                </div>
+                <div class="checklist-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  <span>Full body preferred</span>
+                </div>
+                <div class="checklist-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  <span>Minimal background clutter</span>
+                </div>
+              </div>
+
+              <button class="btn-generate" onclick="setScreen('result')">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                  <path d="M9 21.5L12 16L17.5 13L12 10L9 4.5L6 10L0.5 13L6 16L9 21.5Z"/>
+                </svg>
+                <span>Generate My Transformation</span>
+              </button>
+              
+              <p class="disclaimer-text">
+                AI previews are estimates only. Results vary depending on training, nutrition, genetics, and consistency.
+              </p>
+            </div>
+
+            <!-- 4. RESULT SCREEN -->
+            <div id="screen-result" class="iphone-screen-view">
+              <div class="ai-badge">
+                <svg viewBox="0 0 24 24" width="8" height="8" fill="currentColor">
+                  <path d="M12 2l2.4 7.2h7.6l-6.2 4.5 2.4 7.3-6.2-4.6-6.2 4.6 2.4-7.3-6.2-4.5h7.6z"/>
+                </svg>
+                <span>AI Powered</span>
+              </div>
+              <h3>Your Future Body</h3>
+              <p class="iphone-subtitle">Simulated results at the completion of your customized program.</p>
+
+              <!-- Before/After side by side -->
+              <div class="result-grid">
+                <div class="result-card">
+                  <img class="before-img-bind" src="">
+                  <div class="result-label before">Before</div>
+                </div>
+                <div class="result-card">
+                  <img id="phone-preview-after" src="">
+                  <div class="result-label after">Future Body</div>
+                </div>
+              </div>
+
+              <!-- Stats Cards -->
+              <div class="result-stats-grid">
+                <div class="stat-mini-card">
+                  <span class="stat-mini-label">Estimated Time</span>
+                  <span class="stat-mini-value" id="result-stat-time">16 Weeks</span>
+                </div>
+                <div class="stat-mini-card">
+                  <span class="stat-mini-label">Target Goal</span>
+                  <span class="stat-mini-value" id="result-stat-goal">💪 Build Muscle</span>
+                </div>
+              </div>
+
+              <!-- Share Button -->
+              <button class="btn-share" onclick="shareResult()">
+                <!-- Share Icon -->
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                  <polyline points="16 6 12 2 8 6"/>
+                  <line x1="12" y1="2" x2="12" y2="15"/>
+                </svg>
+                <span>Share Result</span>
+              </button>
+            </div>
+
+
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Toast Notification element -->
+  <div class="toast-notification" id="toast">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <span id="toast-text">Saved successfully!</span>
+  </div>
+
+  <script>
+    // Premium SVG fallback templates if default asset files are not found or fail to load
+    const fallbackSVGs = {
+      before: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 320"><rect width="240" height="320" fill="%23141414"/><path d="M100,60 L140,60 L135,90 L105,90 Z" fill="%233a3a3a"/><path d="M60,95 Q120,85 180,95 Q180,120 170,160 L155,260 Q120,270 85,260 L70,160 Q60,120 60,95 Z" fill="%232c2c2c"/><path d="M60,95 Q40,140 45,190 L55,190 L68,120 Z" fill="%23242424"/><path d="M180,95 Q200,140 195,190 L185,190 L172,120 Z" fill="%23242424"/><path d="M90,120 Q120,130 150,120 M120,125 L120,180 M100,170 Q120,175 140,170 M95,200 Q120,205 145,200" stroke="%23444" stroke-width="2" fill="none"/><text x="120" y="295" fill="%23666666" font-family="system-ui" font-size="12" font-weight="bold" text-anchor="middle">BEFORE PHOTO</text></svg>`,
+      after: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 320"><rect width="240" height="320" fill="%231a0808"/><path d="M100,55 L140,55 L135,85 L105,85 Z" fill="%235a5a5a"/><path d="M50,90 Q120,75 190,90 Q185,120 170,165 L150,260 Q120,270 90,260 L70,165 Q55,120 50,90 Z" fill="%234a4a4a"/><path d="M50,90 Q30,120 35,180 L48,180 L62,115 Z" fill="%233a3a3a"/><path d="M190,90 Q210,120 205,180 L192,180 L178,115 Z" fill="%233a3a3a"/><path d="M80,115 Q120,130 160,115 M120,120 L120,180 M95,160 L145,160 M90,185 L150,185 M95,210 L145,210 M120,150 L120,230" stroke="%238c2c2c" stroke-width="2" fill="none"/><text x="120" y="295" fill="%23ff0000" font-family="system-ui" font-size="12" font-weight="bold" text-anchor="middle">FUTURE BODY</text></svg>`
+    };
+
+    // Application state
+    const state = {
+      beforePhoto: 'assets/before_default.png',
+      afterPhoto: 'assets/after_default.png',
+      goal: 'muscle', // 'muscle' | 'weight'
+      currentScreen: 'upload', // 'upload' | 'detecting' | 'validated' | 'result'
+      savedTransformations: []
+    };
+
+    // Timeline elements for flow playback
+    let playbackTimeouts = [];
+    let progressInterval = null;
+
+    // Initialize application on DOM ready
+    window.addEventListener('DOMContentLoaded', () => {
+      // Sync clock
+      updateClock();
+      setInterval(updateClock, 60000);
+
+      // Load saved list from localStorage
+      const localData = localStorage.getItem('gymguide_saved');
+      if (localData) {
+        try {
+          state.savedTransformations = JSON.parse(localData);
+        } catch(e) {
+          state.savedTransformations = [];
+        }
+      }
+
+      // Preload initial state / bind error handlers
+      setupImageBindings();
+      syncUI();
+      renderSavedList();
+    });
+
+    // Keep iOS status bar time matching real system clock
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      hours = hours < 10 ? '0' + hours : hours;
+      document.getElementById('iphone-time').textContent = `${hours}:${minutes}`;
+    }
+
+    // Set fallback SVG source if default assets fail to load
+    function setupImageBindings() {
+      const beforeBinds = document.querySelectorAll('.before-img-bind, #ctrl-preview-before, #phone-preview-before-upload');
+      beforeBinds.forEach(img => {
+        img.onerror = () => {
+          img.src = fallbackSVGs.before;
+        };
+      });
+
+      const afterBinds = document.querySelectorAll('#phone-preview-after, #ctrl-preview-after');
+      afterBinds.forEach(img => {
+        img.onerror = () => {
+          img.src = fallbackSVGs.after;
+        };
+      });
+    }
+
+    // Main sync function to reflect state in all views
+    function syncUI() {
+      // 1. Sync file inputs & thumbnails in Left Controls panel
+      const beforeBox = document.getElementById('ctrl-upload-before');
+      const innerBefore = document.getElementById('ctrl-upload-inner-before');
+      const previewBefore = document.getElementById('ctrl-preview-before');
+      
+      if (state.beforePhoto) {
+        previewBefore.src = state.beforePhoto;
+        previewBefore.style.display = 'block';
+        innerBefore.style.display = 'none';
+        beforeBox.classList.add('has-image');
+      } else {
+        previewBefore.style.display = 'none';
+        innerBefore.style.display = 'flex';
+        beforeBox.classList.remove('has-image');
+      }
+
+      const afterBox = document.getElementById('ctrl-upload-after');
+      const innerAfter = document.getElementById('ctrl-upload-inner-after');
+      const previewAfter = document.getElementById('ctrl-preview-after');
+      
+      if (state.afterPhoto) {
+        previewAfter.src = state.afterPhoto;
+        previewAfter.style.display = 'block';
+        innerAfter.style.display = 'none';
+        afterBox.classList.add('has-image');
+      } else {
+        previewAfter.style.display = 'none';
+        innerAfter.style.display = 'flex';
+        afterBox.classList.remove('has-image');
+      }
+
+      // 2. Sync images in right iPhone mockup
+      const phoneBeforePreviews = document.querySelectorAll('.before-img-bind');
+      phoneBeforePreviews.forEach(img => {
+        if (state.beforePhoto) {
+          img.src = state.beforePhoto;
+          img.style.display = 'block';
+        } else {
+          img.style.display = 'none';
+        }
+      });
+
+      const phoneBeforeUploadBox = document.querySelector('.phone-upload-box');
+      const phoneUploadInnerBefore = document.getElementById('phone-upload-inner-before');
+      const phonePreviewBeforeUpload = document.getElementById('phone-preview-before-upload');
+      
+      if (state.beforePhoto) {
+        phonePreviewBeforeUpload.src = state.beforePhoto;
+        phonePreviewBeforeUpload.style.display = 'block';
+        phoneUploadInnerBefore.style.display = 'none';
+        phoneBeforeUploadBox.classList.add('has-image');
+      } else {
+        phonePreviewBeforeUpload.style.display = 'none';
+        phoneUploadInnerBefore.style.display = 'flex';
+        phoneBeforeUploadBox.classList.remove('has-image');
+      }
+
+      const phoneAfter = document.getElementById('phone-preview-after');
+      if (state.afterPhoto) {
+        phoneAfter.src = state.afterPhoto;
+        phoneAfter.style.display = 'block';
+      } else {
+        phoneAfter.style.display = 'none';
+      }
+
+      // 3. Sync Goal Selection State (buttons)
+      // Left Controls Goal buttons
+      const ctrlMuscle = document.querySelector('.goal-btn.muscle-btn');
+      const ctrlWeight = document.querySelector('.goal-btn.weight-btn');
+      
+      // Right iPhone screens Goal buttons
+      const phoneMuscles = document.querySelectorAll('.phone-goal-btn.muscle-btn');
+      const phoneWeights = document.querySelectorAll('.phone-goal-btn.weight-btn');
+
+      if (state.goal === 'muscle') {
+        ctrlMuscle.classList.add('active');
+        ctrlWeight.classList.remove('active');
+        phoneMuscles.forEach(btn => btn.classList.add('active'));
+        phoneWeights.forEach(btn => btn.classList.remove('active'));
+
+        document.getElementById('result-stat-time').textContent = '16 Weeks';
+        document.getElementById('result-stat-goal').textContent = '💪 Build Muscle';
+      } else {
+        ctrlMuscle.classList.remove('active');
+        ctrlWeight.classList.add('active');
+        phoneMuscles.forEach(btn => btn.classList.remove('active'));
+        phoneWeights.forEach(btn => btn.classList.add('active'));
+
+        document.getElementById('result-stat-time').textContent = '12 Weeks';
+        document.getElementById('result-stat-goal').textContent = '🔥 Burn Fat';
+      }
+
+      // 4. Sync Screen View displays
+      const views = document.querySelectorAll('.iphone-screen-view');
+      views.forEach(v => v.classList.remove('active'));
+      
+      const targetView = document.getElementById(`screen-${state.currentScreen}`);
+      if (targetView) targetView.classList.add('active');
+
+      // Sync Navigation pills
+      const pills = document.querySelectorAll('.nav-pill');
+      pills.forEach(p => p.classList.remove('active'));
+      
+      const activePillIndex = ['upload', 'detecting', 'validated', 'result'].indexOf(state.currentScreen);
+      if (activePillIndex !== -1 && pills[activePillIndex]) {
+        pills[activePillIndex].classList.add('active');
+      }
+    }
+
+    // Set active screen
+    function setScreen(screenName) {
+      // Cancel playback if the user manually changes screens
+      if (screenName !== state.currentScreen && playbackTimeouts.length > 0 && !document.getElementById('play-btn').classList.contains('playing')) {
+        stopPlayback();
+      }
+      state.currentScreen = screenName;
+      syncUI();
+    }
+
+    // Set target goal
+    function setGoal(goalName) {
+      state.goal = goalName;
+      syncUI();
+    }
+
+    // Back navigation logic
+    function goToPrevScreen() {
+      const order = ['upload', 'detecting', 'validated', 'result'];
+      const curIdx = order.indexOf(state.currentScreen);
+      if (curIdx > 0) {
+        setScreen(order[curIdx - 1]);
+      }
+    }
+
+    // Handle Local File Upload inputs
+    function handleFileChange(event, type) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const fileData = e.target.result;
+        if (type === 'before') {
+          state.beforePhoto = fileData;
+        } else {
+          state.afterPhoto = fileData;
+        }
+        syncUI();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // "Play Full Flow" timeline playback
+    function playFullFlow() {
+      stopPlayback();
+      
+      const playBtn = document.getElementById('play-btn');
+      playBtn.classList.add('playing');
+      playBtn.disabled = true;
+      playBtn.innerHTML = `
+        <svg class="spinner" viewBox="0 0 24 24" width="16" height="16" style="border-width: 2px; border-color: rgba(255,255,255,0.2); border-top-color: #fff; margin-right: 6px;"></svg>
+        <span>Playing Flow...</span>
+      `;
+
+      // Step 1: Upload screen - duration 1.5s
+      setScreen('upload');
+      const uploadOverlay = document.querySelector('#screen-upload .analyzing-overlay');
+      uploadOverlay.style.display = 'none';
+
+      // Simulate a brief wait, then display 'Analyzing with AI...' spinner overlay (duration 1.0s)
+      playbackTimeouts.push(setTimeout(() => {
+        uploadOverlay.style.display = 'flex';
+      }, 500));
+
+      // Step 2: Detecting screen - duration 4.5s
+      playbackTimeouts.push(setTimeout(() => {
+        uploadOverlay.style.display = 'none'; // reset overlay state
+        setScreen('detecting');
+
+        // Animate the progress bar from 0 to 100% over the 4.5s
+        const fill = document.querySelector('.progress-fill');
+        const text = document.querySelector('.progress-percent');
+        fill.style.width = '0%';
+        text.textContent = '0%';
+
+        const start = Date.now();
+        const duration = 4300; // slightly shorter than 4500ms to allow text buffering
+
+        progressInterval = setInterval(() => {
+          const elapsed = Date.now() - start;
+          const pct = Math.min(100, Math.floor((elapsed / duration) * 100));
+          fill.style.width = `${pct}%`;
+          text.textContent = `${pct}%`;
+          if (pct >= 100) {
+            clearInterval(progressInterval);
+            progressInterval = null;
+          }
+        }, 40);
+      }, 1500));
+
+      // Step 3: Validated screen - duration 2.5s
+      playbackTimeouts.push(setTimeout(() => {
+        setScreen('validated');
+      }, 1500 + 4500));
+
+      // Step 4: Result screen - final view (stay)
+      playbackTimeouts.push(setTimeout(() => {
+        setScreen('result');
+        stopPlayback();
+      }, 1500 + 4500 + 2500));
+    }
+
+    // Stop current flow sequence playback
+    function stopPlayback() {
+      playbackTimeouts.forEach(t => clearTimeout(t));
+      playbackTimeouts = [];
+      if (progressInterval) {
+        clearInterval(progressInterval);
+        progressInterval = null;
+      }
+      
+      const playBtn = document.getElementById('play-btn');
+      playBtn.classList.remove('playing');
+      playBtn.disabled = false;
+      playBtn.innerHTML = `
+        <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        <span>Play Full Flow</span>
+      `;
+    }
+
+    // Image compression logic to keep localStorage size minimal
+    function compressImage(dataUrl, callback) {
+      // If it's a default asset path, do not compress
+      if (!dataUrl.startsWith('data:')) {
+        callback(dataUrl);
+        return;
+      }
+
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        // Define compression bounds
+        const maxDim = 160;
+        let w = img.width;
+        let h = img.height;
+
+        if (w > h) {
+          if (w > maxDim) {
+            h = Math.round(h * maxDim / w);
+            w = maxDim;
+          }
+        } else {
+          if (h > maxDim) {
+            w = Math.round(w * maxDim / h);
+            h = maxDim;
+          }
+        }
+
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        
+        // Export highly compressed JPG
+        callback(canvas.toDataURL('image/jpeg', 0.6));
+      };
+      img.onerror = () => {
+        callback(dataUrl);
+      };
+      img.src = dataUrl;
+    }
+
+    // Save current transformation state to localStorage
+    function saveTransformation() {
+      const saveBtn = document.querySelector('.btn-save');
+      const originalHtml = saveBtn.innerHTML;
+      
+      saveBtn.disabled = true;
+      saveBtn.style.opacity = '0.7';
+      saveBtn.innerHTML = `<span>⏳ Processing...</span>`;
+
+      // Helper to process database write
+      const commitSave = (compressedBefore, compressedAfter) => {
+        const timestamp = new Date().toLocaleDateString(undefined, {
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        const newSave = {
+          id: Date.now().toString(),
+          before: compressedBefore,
+          after: compressedAfter,
+          goal: state.goal,
+          timestamp: timestamp
+        };
+
+        state.savedTransformations.unshift(newSave);
+        
+        // Attempt local storage sync (safely wrapped)
+        try {
+          localStorage.setItem('gymguide_saved', JSON.stringify(state.savedTransformations));
+          renderSavedList();
+          showToast("Saved to transformations! 💾");
+        } catch(e) {
+          // If storage fills up, remove oldest entry and retry
+          if (state.savedTransformations.length > 1) {
+            state.savedTransformations.pop();
+            try {
+              localStorage.setItem('gymguide_saved', JSON.stringify(state.savedTransformations));
+              renderSavedList();
+              showToast("Saved! (Oldest item cleared to free space) 💾");
+            } catch(retryErr) {
+              showToast("Failed to save: Storage full. ⚠️");
+            }
+          } else {
+            showToast("Failed to save: Image data too large. ⚠️");
+          }
+        }
+
+        saveBtn.disabled = false;
+        saveBtn.style.opacity = '1';
+        saveBtn.innerHTML = originalHtml;
+      };
+
+      // Compress both before and after images concurrently
+      compressImage(state.beforePhoto, (compBefore) => {
+        compressImage(state.afterPhoto, (compAfter) => {
+          commitSave(compBefore, compAfter);
+        });
+      });
+    }
+
+    // Load saved item from list
+    function loadSaved(id) {
+      stopPlayback();
+      const item = state.savedTransformations.find(x => x.id === id);
+      if (!item) return;
+
+      state.beforePhoto = item.before;
+      state.afterPhoto = item.after;
+      state.goal = item.goal;
+      
+      // Jumps instantly to result screen
+      setScreen('result');
+      showToast("Loaded saved transformation! 🔓");
+    }
+
+    // Delete saved item
+    function deleteSaved(event, id) {
+      // Stop event bubbling to loadSaved click listener
+      event.stopPropagation();
+      
+      state.savedTransformations = state.savedTransformations.filter(x => x.id !== id);
+      localStorage.setItem('gymguide_saved', JSON.stringify(state.savedTransformations));
+      renderSavedList();
+      showToast("Deleted transformation. 🗑️");
+    }
+
+    // Render Saved list elements dynamically
+    function renderSavedList() {
+      const container = document.getElementById('saved-list');
+      
+      if (state.savedTransformations.length === 0) {
+        container.innerHTML = `<div class="saved-empty">No saved transformations yet</div>`;
+        return;
+      }
+
+      container.innerHTML = '';
+      state.savedTransformations.forEach(item => {
+        const goalIcon = item.goal === 'muscle' ? '💪' : '🔥';
+        const goalLabel = item.goal === 'muscle' ? 'Build Muscle' : 'Lose Weight';
+
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'saved-item';
+        itemDiv.setAttribute('onclick', `loadSaved('${item.id}')`);
+
+        // Handle source loading safely
+        const beforeSrc = (item.before.startsWith('data:') || item.before.startsWith('assets/')) ? item.before : fallbackSVGs.before;
+        const afterSrc = (item.after.startsWith('data:') || item.after.startsWith('assets/')) ? item.after : fallbackSVGs.after;
+
+        itemDiv.innerHTML = `
+          <div class="saved-item-left">
+            <div class="saved-thumbs">
+              <img src="${beforeSrc}" onerror="this.src=fallbackSVGs.before">
+              <img src="${afterSrc}" onerror="this.src=fallbackSVGs.after">
+            </div>
+            <div class="saved-info">
+              <span class="saved-goal">${goalIcon} ${goalLabel}</span>
+              <span class="saved-time">${item.timestamp}</span>
+            </div>
+          </div>
+          <button class="delete-btn" onclick="deleteSaved(event, '${item.id}')">×</button>
+        `;
+        container.appendChild(itemDiv);
+      });
+    }
+
+    // Show toast alerts
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      
+      toastText.textContent = message;
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    // Dummy share popup
+    function shareResult() {
+      showToast("Result link copied to clipboard! 📤");
+    }
+  </script>
+</body>
+</html>
