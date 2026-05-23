@@ -1235,7 +1235,7 @@
     .detecting-footer { font-size: 10px; color: #444; margin-top: auto; text-align: center; padding: 12px 0 8px; }
 
     /* Result screen */
-    .result-comparison-slider { position: relative; width: 100%; height: clamp(240px, 95cqw, 370px); border-radius: var(--border-radius-md); overflow: hidden; border: 1px solid #1f1f1f; margin-bottom: 10px; cursor: ew-resize; user-select: none; -webkit-user-select: none; background: #111; touch-action: none; }
+    .result-comparison-slider { position: relative; width: 100%; aspect-ratio: 3 / 4; border-radius: var(--border-radius-md); overflow: hidden; border: 1px solid #1f1f1f; margin-bottom: 10px; cursor: ew-resize; user-select: none; -webkit-user-select: none; background: #111; touch-action: none; }
     .slider-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
     .slider-layer img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
     .slider-layer.before-layer { z-index: 2; clip-path: inset(0 50% 0 0); }
@@ -1635,9 +1635,9 @@
                   </div>
                 </div>
               </div>
-              <div style="flex:1; background:#111; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:16px;">
-                <div style="width:60px; height:60px; border-radius:14px; overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,0.4);">
-                  <img src="assets/gymguideicon.svg" alt="GymGuide" style="width:100%; height:100%; object-fit:cover; background:#ff0000; padding:8px;">
+              <div style="flex:1; background:#111; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:20px;">
+                <div style="width:180px; height:40px; display:flex; align-items:center; justify-content:center;">
+                  <img src="assets/gymguideco.png" alt="GymGuide" style="max-width:100%; max-height:100%; object-fit:contain;">
                 </div>
                 <div class="spinner" style="width:28px; height:28px; border-color:rgba(255, 0, 0,0.15); border-top-color:#ff0000;"></div>
                 <span style="font-size:14px; color:#666; font-family:-apple-system,sans-serif;">Loading GymGuide...</span>
@@ -2222,8 +2222,33 @@
     }
 
     // ── Safari → Typing ──
-    function startTyping() {
+    let typingInterval = null;
+    function startTyping(onComplete) {
       goToScreenByName('typing');
+      updateDots('typing');
+
+      const textSpan = document.getElementById('typing-text');
+      if (!textSpan) return;
+
+      textSpan.textContent = '';
+      const fullText = 'gymguide.co';
+      let index = 0;
+
+      if (typingInterval) clearInterval(typingInterval);
+
+      // Typing animation over 2 seconds (2000ms / 11 chars = ~181ms per char)
+      const delay = 2000 / fullText.length;
+      typingInterval = setInterval(() => {
+        textSpan.textContent += fullText[index];
+        index++;
+        if (index >= fullText.length) {
+          clearInterval(typingInterval);
+          typingInterval = null;
+          if (typeof onComplete === 'function') {
+            onComplete();
+          }
+        }
+      }, delay);
     }
 
     // ── Typing → Load GymGuide ──
@@ -2294,7 +2319,7 @@
         tapSafari();
       }, 1500));
 
-      // Step 3: Safari start page shown, then tap URL bar (t=2800ms)
+      // Step 3: Safari start page shown, then tap URL bar (t=2000ms)
       playbackTimeouts.push(setTimeout(() => {
         goToScreenByName('safari');
         updateDots('safari');
@@ -2302,38 +2327,38 @@
 
       // Step 4: Start typing (t=3200ms)
       playbackTimeouts.push(setTimeout(() => {
-        goToScreenByName('typing');
-        updateDots('typing');
+        startTyping(() => {
+          // Callback after typing completes (takes 2 seconds)
+          // Wait 800ms for realism, then load GymGuide
+          playbackTimeouts.push(setTimeout(() => {
+            loadGymGuide();
+            updateDots('loading');
+          }, 800));
+        });
       }, 3200));
 
-      // Step 5: Select gymguide.co suggestion and start loading (t=4500ms)
-      playbackTimeouts.push(setTimeout(() => {
-        loadGymGuide();
-        updateDots('loading');
-      }, 4500));
-
-      // Step 6: GymGuide home (muscle map) appears (t=6200ms)
+      // Step 6: GymGuide home (muscle map) appears (t=7700ms)
       playbackTimeouts.push(setTimeout(() => {
         goToScreenByName('gymguide-home');
         updateDots('gymguide-home');
-      }, 6200));
+      }, 7700));
 
-      // Step 7: Navigate to More page (t=8000ms)
+      // Step 7: Navigate to More page (t=9500ms)
       playbackTimeouts.push(setTimeout(() => {
         goToMorePage();
         updateDots('gymguide-more');
-      }, 8000));
+      }, 9500));
 
-      // Step 8: Tap "Preview My Future Body" (t=9800ms)
+      // Step 8: Tap "Preview My Future Body" (t=11300ms)
       playbackTimeouts.push(setTimeout(() => {
         tapPreviewFuture();
         updateDots('ai-flow');
-      }, 9800));
+      }, 11300));
 
-      // Step 9: AI upload screen shown → start AI sub-flow (t=10200ms)
+      // Step 9: AI upload screen shown → start AI sub-flow (t=11700ms)
       playbackTimeouts.push(setTimeout(() => {
         playAISubFlow();
-      }, 10200));
+      }, 11700));
     }
 
     // ── AI Sub-flow (after "Preview My Future Body" tap) ──
@@ -2466,6 +2491,9 @@
       playbackTimeouts.forEach(t => clearTimeout(t));
       playbackTimeouts = [];
       if (progressInterval) { clearInterval(progressInterval); progressInterval = null; }
+      if (typingInterval) { clearInterval(typingInterval); typingInterval = null; }
+      const textSpan = document.getElementById('typing-text');
+      if (textSpan) textSpan.textContent = 'gymguide.co';
 
       const playBtn = document.getElementById('play-btn');
       if (playBtn) {
