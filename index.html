@@ -1201,7 +1201,7 @@
     .phone-section-label { font-size: clamp(11px, 3cqw, 12px); font-weight: 700; color: #888; margin-bottom: 5px; }
 
     .phone-goal-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-    .phone-goal-btn { padding: clamp(8px, 3cqw, 10px); border-radius: var(--border-radius-md); font-size: clamp(11px, 3.5cqw, 12px); font-weight: 700; border: 1px solid #222; background: #111; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; transition: all var(--transition-speed); }
+    .phone-goal-btn { padding: clamp(10px, 4cqw, 14px) clamp(6px, 2cqw, 10px); border-radius: 20px; font-size: clamp(12px, 3.8cqw, 13px); font-weight: 700; border: 1px solid #222; background: #111; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; transition: all var(--transition-speed); font-family: -apple-system, sans-serif; }
     .phone-goal-btn.muscle-btn.active { background: var(--primary-red); color: #fff; border-color: var(--primary-red); box-shadow: 0 4px 10px rgba(255, 0, 0,0.3); }
     .phone-goal-btn.weight-btn.active { background: #fff; color: #000; border-color: #fff; box-shadow: 0 4px 10px rgba(255,255,255,0.15); }
     .phone-goal-btn svg { width: 16px; height: 16px; }
@@ -2105,11 +2105,11 @@
                     <span class="phone-section-label">Transformation Goal</span>
                     <div class="phone-goal-toggle" style="margin-bottom:0;">
                       <button class="phone-goal-btn muscle-btn active" onclick="setGoal('muscle')">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9c-.6 0-1 .4-1 1v4c0 .6.4 1 1 1h1V9H5zm14 0h-1v6h1c.6 0 1-.4 1-1v-4c0-.6-.4-1-1-1zM9 4c-.6 0-1 .4-1 1v14c0 .6.4 1 1 1h1V4H9zm6 0h-1v16h1c.6 0 1-.4 1-1V5c0-.6-.4-1-1-1zm-4 4h2v8h-2V8z"/></svg>
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29l-1.43-1.43z"/></svg>
                         <span>Build Muscle</span>
                       </button>
                       <button class="phone-goal-btn weight-btn" onclick="setGoal('weight')">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.3 5.4 6 9.4 6 12.8c0 3.3 2.7 6 6 6s6-2.7 6-6c0-3.4-2.3-7.4-6-10.8z"/></svg>
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
                         <span>Lose Weight</span>
                       </button>
                     </div>
@@ -2117,25 +2117,31 @@
 
                   <div class="phone-checklist">
                     <div class="checklist-title">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/></svg>
+                      <!-- Filled camera icon in red -->
+                      <svg viewBox="0 0 24 24" width="15" height="15" fill="#ff0000"><path d="M12 15.2A3.2 3.2 0 1 1 12 8.8a3.2 3.2 0 0 1 0 6.4zM9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9z"/></svg>
                       <span>Photo Requirements</span>
                     </div>
                     <div class="checklist-item">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#22c55e" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10" stroke-linecap="round" stroke-linejoin="round"/></svg>
                       <span>Front-facing body photo</span>
                     </div>
                     <div class="checklist-item">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#22c55e" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10" stroke-linecap="round" stroke-linejoin="round"/></svg>
                       <span>Good lighting, no harsh shadows</span>
                     </div>
                     <div class="checklist-item">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#22c55e" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10" stroke-linecap="round" stroke-linejoin="round"/></svg>
                       <span>Full body preferred</span>
+                    </div>
+                    <div class="checklist-item">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#22c55e" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span>Minimal background clutter</span>
                     </div>
                   </div>
 
                   <button class="btn-generate-transform" onclick="playAIFlow()">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2Z"/></svg>
+                    <!-- Sparkles icon -->
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 3L13.5 8.5L19 10L13.5 11.5L12 17L10.5 11.5L5 10L10.5 8.5L12 3ZM5 3L5.8 5.2L8 6L5.8 6.8L5 9L4.2 6.8L2 6L4.2 5.2L5 3ZM19 15L19.8 17.2L22 18L19.8 18.8L19 21L18.2 18.8L16 18L18.2 17.2L19 15Z"/></svg>
                     <span>Generate My Transformation</span>
                   </button>
                 </div>
