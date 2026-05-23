@@ -2574,7 +2574,7 @@
       document.querySelectorAll('.phone-goal-btn.weight-btn').forEach(b => b.classList.toggle('active', state.goal === 'weight'));
 
       const goalEl = document.getElementById('result-stat-goal');
-      if (goalEl) goalEl.textContent = state.goal === 'muscle' ? '💪 Build Muscle' : '🔥 Burn Fat';
+      if (goalEl) goalEl.textContent = state.goal === 'muscle' ? 'Build Muscle' : 'Burn Fat';
 
       const timeEl = document.getElementById('result-stat-time');
       if (timeEl) timeEl.textContent = state.estimatedTime;
@@ -2679,14 +2679,13 @@
       }
       container.innerHTML = '';
       state.savedTransformations.forEach(item => {
-        const goalIcon = item.goal === 'muscle' ? '💪' : '🔥';
         const goalLabel = item.goal === 'muscle' ? 'Build Muscle' : 'Lose Weight';
         const div = document.createElement('div');
         div.className = 'saved-item';
         div.setAttribute('onclick', `loadSaved('${item.id}')`);
         const bSrc = (item.before && (item.before.startsWith('data:') || item.before.startsWith('assets/'))) ? item.before : fallbackSVGs.before;
         const aSrc = (item.after && (item.after.startsWith('data:') || item.after.startsWith('assets/'))) ? item.after : fallbackSVGs.after;
-        div.innerHTML = `<div class="saved-item-left"><div class="saved-thumbs"><img src="${bSrc}"><img src="${aSrc}"></div><div class="saved-info"><span class="saved-goal">${goalIcon} ${goalLabel}</span><span class="saved-time">${item.timestamp}</span></div></div><button class="delete-btn" onclick="deleteSaved(event,'${item.id}')">×</button>`;
+        div.innerHTML = `<div class="saved-item-left"><div class="saved-thumbs"><img src="${bSrc}"><img src="${aSrc}"></div><div class="saved-info"><span class="saved-goal">${goalLabel}</span><span class="saved-time">${item.timestamp}</span></div></div><button class="delete-btn" onclick="deleteSaved(event,'${item.id}')">×</button>`;
         container.appendChild(div);
       });
     }
