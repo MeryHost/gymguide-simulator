@@ -1419,11 +1419,11 @@
           <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
           <span>Play Full Flow</span>
         </button>
-        <button class="btn-action btn-save" onclick="saveTransformation()">
+        <button class="btn-action btn-save" onclick="downloadFlow()">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
           </svg>
-          <span>Save transformation</span>
+          <span>Download Flow</span>
         </button>
       </div>
 
@@ -2677,32 +2677,106 @@
       img.src = dataUrl;
     }
 
-    function saveTransformation() {
-      const saveBtn = document.querySelector('.btn-save');
-      const orig = saveBtn.innerHTML;
-      saveBtn.disabled = true;
-      saveBtn.style.opacity = '0.7';
-      saveBtn.innerHTML = '<span>⏳ Processing...</span>';
+    // ── Download Flow as MP4 ──
+    function downloadFlow() {
+      // 1080×1920 = 9:16
+      const OUT_W = 1080;
+      const OUT_H = 1920;
+      const FPS   = 30;
 
-      const commit = (cb, ca) => {
-        const ts = new Date().toLocaleDateString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
-        const newSave = { id: Date.now().toString(), before: cb, after: ca, goal: state.goal, timestamp: ts };
-        state.savedTransformations.unshift(newSave);
-        try {
-          localStorage.setItem('gymguide_saved', JSON.stringify(state.savedTransformations));
-          renderSavedList();
-          showToast('Saved to transformations! 💾');
-        } catch(e) {
-          if (state.savedTransformations.length > 1) {
-            state.savedTransformations.pop();
-            try { localStorage.setItem('gymguide_saved', JSON.stringify(state.savedTransformations)); renderSavedList(); showToast('Saved! (Oldest cleared) 💾'); }
-            catch(r) { showToast('Failed: Storage full ⚠️'); }
-          } else { showToast('Failed: Image too large ⚠️'); }
-        }
-        saveBtn.disabled = false; saveBtn.style.opacity = '1'; saveBtn.innerHTML = orig;
+      const btn = document.querySelector('.btn-save');
+      if (btn.dataset.recording === 'true') return;
+
+      // Check html2canvas is available
+      if (typeof html2canvas === 'undefined') {
+        showToast('Loading recorder…');
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        s.onload = () => downloadFlow();
+        document.head.appendChild(s);
+        return;
+      }
+
+      // Check MediaRecorder support
+      const mimeType = ['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm']
+        .find(m => MediaRecorder.isTypeSupported(m)) || 'video/webm';
+      const ext = mimeType.startsWith('video/mp4') ? 'mp4' : 'webm';
+
+      // UI feedback
+      btn.dataset.recording = 'true';
+      const origHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+      btn.innerHTML = '<span>⏺ Recording…</span>';
+
+      // Offscreen canvas at 9:16 target resolution
+      const canvas = document.createElement('canvas');
+      canvas.width  = OUT_W;
+      canvas.height = OUT_H;
+      const ctx = canvas.getContext('2d');
+
+      const source = document.querySelector('.iphone-screen');
+      const chunks = [];
+      const stream = canvas.captureStream(FPS);
+      const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 8_000_000 });
+      recorder.ondataavailable = e => { if (e.data && e.data.size > 0) chunks.push(e.data); };
+
+      // Frame capture loop
+      let rafId;
+      let stopped = false;
+      const capture = () => {
+        if (stopped) return;
+        html2canvas(source, {
+          backgroundColor: '#000000',
+          scale: OUT_W / source.offsetWidth,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+        }).then(snap => {
+          // snap may have different height; we letterbox into 1080×1920
+          const scale = Math.min(OUT_W / snap.width, OUT_H / snap.height);
+          const dw = Math.round(snap.width  * scale);
+          const dh = Math.round(snap.height * scale);
+          const dx = Math.round((OUT_W - dw) / 2);
+          const dy = Math.round((OUT_H - dh) / 2);
+          ctx.fillStyle = '#000';
+          ctx.fillRect(0, 0, OUT_W, OUT_H);
+          ctx.drawImage(snap, dx, dy, dw, dh);
+          if (!stopped) rafId = requestAnimationFrame(capture);
+        }).catch(() => { if (!stopped) rafId = requestAnimationFrame(capture); });
       };
 
-      compressImage(state.beforePhoto, cb => compressImage(state.afterPhoto, ca => commit(cb, ca)));
+      recorder.onstop = () => {
+        stopped = true;
+        cancelAnimationFrame(rafId);
+        const blob = new Blob(chunks, { type: mimeType });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href     = url;
+        a.download = `gymguide-transformation.${ext}`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.innerHTML = origHTML;
+        btn.dataset.recording = 'false';
+        showToast(`Flow saved as ${ext.toUpperCase()}!`);
+      };
+
+      // Total flow duration ~25 seconds
+      const RECORD_DURATION = 25000;
+
+      recorder.start(200);   // collect data every 200ms
+      capture();             // start frame loop
+      stopPlayback();
+      playFullFlow();        // kick off the animated demo
+
+      setTimeout(() => {
+        stopped = true;
+        cancelAnimationFrame(rafId);
+        recorder.stop();
+        stream.getTracks().forEach(t => t.stop());
+      }, RECORD_DURATION);
     }
 
     function loadSaved(id) {
