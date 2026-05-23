@@ -1264,7 +1264,8 @@
     .stat-mini-label { font-size: clamp(8px, 2.5cqw, 9px); font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; line-height: 1; }
     .stat-mini-value { font-size: clamp(12px, 3.5cqw, 14px); font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; line-height: 1.1; }
 
-    .btn-share { width: 100%; padding: clamp(8px, 2.8cqw, 10px); border-radius: var(--border-radius-pill); background: var(--primary-red); color: white; font-size: clamp(12px, 4cqw, 14px); font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: auto; box-shadow: 0 4px 14px var(--primary-red-glow); transition: all var(--transition-speed); }
+    .result-actions { margin-top: auto; display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    .btn-share { width: 100%; padding: clamp(8px, 2.8cqw, 10px); border-radius: var(--border-radius-pill); background: var(--primary-red); color: white; font-size: clamp(12px, 4cqw, 14px); font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 4px 14px var(--primary-red-glow); transition: all var(--transition-speed); }
     .btn-share:hover { background: var(--primary-red-hover); }
 
     /* Validated badge */
@@ -2102,11 +2103,15 @@
                     </div>
                   </div>
 
-                  <button class="btn-share" onclick="shareResult()">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-                    <span>Share Result</span>
-                  </button>
-                </div>
+                  <div class="result-actions">
+                    <button class="btn-share" onclick="showToast('Customized plan generated! 💪')">
+                      <span>Generate Customized Plan</span>
+                    </button>
+                    <button class="btn-share" onclick="shareResult()">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                      <span>Share Result</span>
+                    </button>
+                  </div>
 
               </div><!-- /ai-inner -->
 
