@@ -2595,13 +2595,15 @@
       }, 3900));
 
       // Tap generate button
-      const genBtn = document.querySelector('#screen-upload .btn-generate-transform');
-      if (genBtn) {
-        playbackTimeouts.push(setTimeout(() => {
-          genBtn.classList.add('simulated-click');
-          playbackTimeouts.push(setTimeout(() => { genBtn.classList.remove('simulated-click'); }, 260));
-        }, 5800));
-      }
+      playbackTimeouts.push(setTimeout(() => {
+        simulateTap('#screen-upload .btn-generate-transform', () => {
+          const genBtn = document.querySelector('#screen-upload .btn-generate-transform');
+          if (genBtn) {
+            genBtn.classList.add('simulated-click');
+            playbackTimeouts.push(setTimeout(() => { genBtn.classList.remove('simulated-click'); }, 260));
+          }
+        });
+      }, 5500));
 
       // Detecting screen
       playbackTimeouts.push(setTimeout(() => {
