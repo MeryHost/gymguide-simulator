@@ -1295,6 +1295,23 @@
       display: none;
     }
 
+    /* Tap Animation */
+    .sim-tap-icon {
+      position: absolute;
+      width: 44px; height: 44px;
+      z-index: 99999;
+      pointer-events: none;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+      animation: tapSequence 0.8s forwards ease-in-out;
+      margin-left: -10px; margin-top: 10px;
+    }
+    @keyframes tapSequence {
+      0% { opacity: 0; transform: translate(15px, 25px) scale(1.3); }
+      30% { opacity: 1; transform: translate(0, 0) scale(1); }
+      50% { opacity: 1; transform: translate(0, 0) scale(0.85); }
+      100% { opacity: 0; transform: translate(0, 0) scale(1); }
+    }
+
     .demo-step-dot {
       width: 8px;
       height: 8px;
@@ -2184,9 +2201,12 @@
 
     // ── Main Screen Navigation ──
     function goToScreenByName(name) {
-      // Hide all screen-views by removing both classes
-      document.querySelectorAll('.screen-view').forEach(s => {
-        s.classList.remove('active', 'visible');
+      // Hide all screen-views smoothly
+      document.querySelectorAll('.screen-view.visible').forEach(s => {
+        s.classList.remove('visible');
+        setTimeout(() => {
+          if (!s.classList.contains('visible')) s.classList.remove('active');
+        }, 400); // wait for opacity transition
       });
 
       const target = document.getElementById('screen-' + name);
@@ -2201,6 +2221,35 @@
       state.currentMainScreen = name;
       updateNavPills(name);
       updateDots(name);
+    }
+
+    function simulateTap(selector, callback) {
+      const el = document.querySelector(selector);
+      if (!el) { if (callback) callback(); return; }
+      
+      const rect = el.getBoundingClientRect();
+      const container = document.querySelector('.iphone-screen');
+      const containerRect = container.getBoundingClientRect();
+      
+      const tap = document.createElement('img');
+      tap.src = 'assets/tapicon.png';
+      tap.className = 'sim-tap-icon';
+      
+      const top = rect.top - containerRect.top + rect.height/2;
+      const left = rect.left - containerRect.left + rect.width/2;
+      
+      tap.style.top = top + 'px';
+      tap.style.left = left + 'px';
+      
+      container.appendChild(tap);
+      
+      setTimeout(() => {
+        if(callback) callback();
+      }, 400);
+      
+      setTimeout(() => {
+        if (tap.parentNode) tap.parentNode.removeChild(tap);
+      }, 850);
     }
 
     function updateNavPills(name) {
@@ -2323,49 +2372,49 @@
 
       // Step 2: Tap Safari (t=1500ms)
       playbackTimeouts.push(setTimeout(() => {
-        tapSafari();
+        simulateTap('#dock-safari', () => tapSafari());
       }, 1500));
 
-      // Step 3: Safari start page shown, then tap URL bar (t=2000ms)
+      // Step 3: Safari start page shown, then tap URL bar (t=2700ms)
       playbackTimeouts.push(setTimeout(() => {
-        goToScreenByName('safari');
-        updateDots('safari');
-      }, 2000));
-
-      // Step 4: Start typing (t=3200ms)
-      playbackTimeouts.push(setTimeout(() => {
-        startTyping(() => {
-          // Callback after typing completes (takes 2 seconds)
-          // Wait 800ms for realism, then load GymGuide
-          playbackTimeouts.push(setTimeout(() => {
-            loadGymGuide();
-            updateDots('loading');
-          }, 800));
+        simulateTap('.safari-url-bar', () => {
+          startTyping(() => {
+            // Callback after typing completes (takes 2 seconds)
+            // Wait 800ms for realism, then load GymGuide
+            playbackTimeouts.push(setTimeout(() => {
+              loadGymGuide();
+              updateDots('loading');
+            }, 800));
+          });
         });
-      }, 3200));
+      }, 2700));
 
-      // Step 6: GymGuide home (muscle map) appears (t=7700ms)
+      // Step 6: GymGuide home (muscle map) appears (t=8000ms)
       playbackTimeouts.push(setTimeout(() => {
         goToScreenByName('gymguide-home');
         updateDots('gymguide-home');
-      }, 7700));
+      }, 8000));
 
-      // Step 7: Navigate to More page (t=9500ms)
+      // Step 7: Navigate to More page (t=9800ms)
       playbackTimeouts.push(setTimeout(() => {
-        goToMorePage();
-        updateDots('gymguide-more');
-      }, 9500));
+        simulateTap('.nav-tab:last-child', () => {
+          goToMorePage();
+          updateDots('gymguide-more');
+        });
+      }, 9800));
 
-      // Step 8: Tap "Preview My Future Body" (t=11300ms)
+      // Step 8: Tap "Preview My Future Body" (t=11800ms)
       playbackTimeouts.push(setTimeout(() => {
-        tapPreviewFuture();
-        updateDots('ai-flow');
-      }, 11300));
+        simulateTap('#btn-preview-future', () => {
+          tapPreviewFuture();
+          updateDots('ai-flow');
+        });
+      }, 11800));
 
-      // Step 9: AI upload screen shown → start AI sub-flow (t=11700ms)
+      // Step 9: AI upload screen shown → start AI sub-flow (t=12500ms)
       playbackTimeouts.push(setTimeout(() => {
         playAISubFlow();
-      }, 11700));
+      }, 12500));
     }
 
     // ── AI Sub-flow (after "Preview My Future Body" tap) ──
