@@ -1255,9 +1255,9 @@
     .result-label.after { right: 10px; background: var(--primary-red); color: white; box-shadow: 0 2px 6px var(--primary-red-glow); }
 
     @keyframes sliderHint { 0%   { left: 90%; } 100% { left: 10%; } }
-    .slider-hint .slider-divider, .slider-hint .slider-handle { animation: sliderHint 5s ease-in-out; }
-    .slider-hint .slider-layer.before-layer { animation: sliderHintClip 5s ease-in-out; }
-    @keyframes sliderHintClip { 0%   { clip-path: inset(0 10% 0 0); } 100% { clip-path: inset(0 90% 0 0); } }
+    .slider-hint .slider-divider, .slider-hint .slider-handle { animation: sliderHint 5s ease-in-out forwards; }
+    .slider-hint .slider-layer.before-layer { animation: sliderHintClip 5s ease-in-out forwards; }
+    @keyframes sliderHintClip { 0%   { clip-path: inset(0 10% 0 0); -webkit-clip-path: inset(0 10% 0 0); } 100% { clip-path: inset(0 90% 0 0); -webkit-clip-path: inset(0 90% 0 0); } }
 
     .result-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 8px; }
     .stat-mini-card { background: #1a1a1a; border: 1px solid #1f1f1f; border-radius: var(--border-radius-md); padding: 8px 10px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 3px; min-width: 0; }
@@ -2741,15 +2741,19 @@
       const _origSetAI = setAIScreen;
       setAIScreen = function(name) {
         _origSetAI(name);
-        if (name === 'result' && !hintPlayed) {
-          hintPlayed = true;
-          update(90);
+        if (name === 'result') {
+          // Set final inline state so it doesn't flicker when animation ends
+          update(10);
           if (sc) {
+            // Force reflow to restart animation if already applied
+            sc.classList.remove('slider-hint');
+            void sc.offsetWidth; 
             sc.classList.add('slider-hint');
+            
+            // Cleanup class after animation completes
             setTimeout(() => {
               sc.classList.remove('slider-hint');
-              update(10);
-            }, 5000);
+            }, 5100);
           }
         }
       };
