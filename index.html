@@ -1198,15 +1198,18 @@
     .spinner { width: 22px; height: 22px; border: 2.5px solid rgba(255, 0, 0,0.1); border-top-color: var(--primary-red); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .phone-section-label { font-size: clamp(11px, 3cqw, 12px); font-weight: 700; color: #888; margin-bottom: 5px; }
+    .phone-section-label { font-size: clamp(11px, 3cqw, 12px); font-weight: 700; color: #888; margin-bottom: 8px; display: block; }
 
-    .phone-goal-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-    .phone-goal-btn { padding: clamp(10px, 4cqw, 14px) clamp(6px, 2cqw, 10px); border-radius: 20px; font-size: clamp(12px, 3.8cqw, 13px); font-weight: 700; border: 1px solid #222; background: #111; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; transition: all var(--transition-speed); font-family: -apple-system, sans-serif; }
+    .phone-goal-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+    .phone-goal-btn { padding: clamp(12px, 4.5cqw, 16px) clamp(6px, 2cqw, 10px); border-radius: 20px; font-size: clamp(12px, 3.8cqw, 13px); font-weight: 700; border: 1px solid #222; background: #111; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: all var(--transition-speed); font-family: -apple-system, sans-serif; }
     .phone-goal-btn.muscle-btn.active { background: var(--primary-red); color: #fff; border-color: var(--primary-red); box-shadow: 0 4px 10px rgba(255, 0, 0,0.3); }
     .phone-goal-btn.weight-btn.active { background: #fff; color: #000; border-color: #fff; box-shadow: 0 4px 10px rgba(255,255,255,0.15); }
-    .phone-goal-btn svg { width: 16px; height: 16px; }
+    .phone-goal-btn .goal-icon-img { width: 36px; height: 36px; object-fit: contain; display: block; }
+    .phone-goal-btn.muscle-btn.active .goal-icon-img,
+    .phone-goal-btn.weight-btn.active .goal-icon-img { filter: none; }
+    .phone-goal-btn:not(.active) .goal-icon-img { filter: grayscale(100%) brightness(0.5); }
 
-    .phone-checklist { background: #1a1a1a; border: 1px solid #1f1f1f; border-radius: var(--border-radius-md); padding: 10px 12px; display: flex; flex-direction: column; gap: 5px; }
+    .phone-checklist { background: #1a1a1a; border: 1px solid #1f1f1f; border-radius: var(--border-radius-md); padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
     .checklist-title { font-size: clamp(11px, 3.2cqw, 13px); font-weight: 700; color: #fff; display: flex; align-items: center; gap: 5px; margin-bottom: 2px; }
     .checklist-title svg { width: 14px; height: 14px; color: var(--primary-red); }
     .checklist-item { font-size: clamp(10px, 3cqw, 11px); color: #888; display: flex; align-items: center; gap: 5px; }
@@ -1220,7 +1223,7 @@
       cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
       box-shadow: 0 6px 24px var(--primary-red-glow);
       transition: all var(--transition-speed) cubic-bezier(0.4,0,0.2,1);
-      margin-top: auto; letter-spacing: 0.3px;
+      margin-top: 0; letter-spacing: 0.3px;
     }
     .btn-generate-transform:hover { background: var(--primary-red-hover); transform: translateY(-2px); }
     .btn-generate-transform.simulated-click { transform: scale(0.96) translateY(0); background: var(--primary-red-hover); }
@@ -2101,15 +2104,15 @@
                     </div>
                   </div>
 
-                  <div>
+                  <div style="margin-bottom: 10px;">
                     <span class="phone-section-label">Transformation Goal</span>
                     <div class="phone-goal-toggle" style="margin-bottom:0;">
                       <button class="phone-goal-btn muscle-btn active" onclick="setGoal('muscle')">
-                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29l-1.43-1.43z"/></svg>
+                        <img src="assets/buildmuscle.png" alt="Build Muscle" class="goal-icon-img">
                         <span>Build Muscle</span>
                       </button>
                       <button class="phone-goal-btn weight-btn" onclick="setGoal('weight')">
-                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <img src="assets/loseweight.png" alt="Lose Weight" class="goal-icon-img">
                         <span>Lose Weight</span>
                       </button>
                     </div>
