@@ -1337,6 +1337,81 @@
       .mockup-panel { width: 100%; display: flex; justify-content: center; padding-top: 20px; border-top: 1px solid #222; }
       .iphone-container { width: 90vw; max-width: 375px; height: auto; aspect-ratio: 9 / 16; border-radius: 0; border: none; box-shadow: none; padding: 0; }
     }
+
+    /* ═══════════════════════════════════════════
+       RECORDING MODE — phone fills entire viewport
+       so native tab capture records it at full quality
+    ═══════════════════════════════════════════ */
+    body.recording-mode {
+      overflow: hidden;
+      padding: 0;
+      background: #000;
+      align-items: center;
+      justify-content: center;
+    }
+    body.recording-mode .controls-panel,
+    body.recording-mode .demo-nav-pills-row,
+    body.recording-mode .actions-stack,
+    body.recording-mode .saved-container,
+    body.recording-mode .controls-header {
+      display: none !important;
+    }
+    body.recording-mode .dashboard-container {
+      background: #000;
+      border: none;
+      box-shadow: none;
+      backdrop-filter: none;
+      padding: 0;
+      gap: 0;
+      max-width: none;
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0;
+      justify-content: center;
+      align-items: center;
+    }
+    body.recording-mode .mockup-panel {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: none;
+      background: #000;
+    }
+    body.recording-mode .iphone-container {
+      /* Scale to fill the full viewport height at 9:16 */
+      width: auto !important;
+      height: 100vh !important;
+      max-width: none !important;
+      aspect-ratio: 9 / 16;
+    }
+    .recording-countdown {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 999999;
+      background: rgba(255,0,0,0.92);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(255,0,0,0.5);
+      pointer-events: none;
+    }
+    .recording-countdown .rec-dot {
+      width: 10px; height: 10px;
+      background: #fff;
+      border-radius: 50%;
+      animation: recBlink 1s infinite;
+    }
+    @keyframes recBlink { 0%,100%{opacity:1} 50%{opacity:0.2} }
   </style>
 </head>
 <body>
@@ -2678,105 +2753,101 @@
     }
 
     // ── Download Flow as MP4 ──
-    function downloadFlow() {
-      // 1080×1920 = 9:16
-      const OUT_W = 1080;
-      const OUT_H = 1920;
-      const FPS   = 30;
-
+    async function downloadFlow() {
       const btn = document.querySelector('.btn-save');
       if (btn.dataset.recording === 'true') return;
 
-      // Check html2canvas is available
-      if (typeof html2canvas === 'undefined') {
-        showToast('Loading recorder…');
-        const s = document.createElement('script');
-        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-        s.onload = () => downloadFlow();
-        document.head.appendChild(s);
+      const RECORD_MS  = 27000; // full flow ~25s + buffer
+      const MIME_TYPES = ['video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm'];
+      const mimeType   = MIME_TYPES.find(m => MediaRecorder.isTypeSupported(m)) || 'video/webm';
+      const ext        = mimeType.startsWith('video/mp4') ? 'mp4' : 'webm';
+
+      // --- Enter recording mode (phone fills the whole tab) ---
+      document.body.classList.add('recording-mode');
+      await new Promise(r => setTimeout(r, 350)); // let CSS reflow
+
+      // --- Native tab capture ---
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getDisplayMedia({
+          video: {
+            displaySurface: 'browser',
+            frameRate: { ideal: 60, max: 60 },
+            width:     { ideal: 1920 },
+            height:    { ideal: 1080 },
+          },
+          audio: false,
+          preferCurrentTab: true,
+          selfBrowserSurface: 'include',
+        });
+      } catch (err) {
+        document.body.classList.remove('recording-mode');
+        if (err.name !== 'NotAllowedError') showToast('Screen capture not supported in this browser');
         return;
       }
 
-      // Check MediaRecorder support
-      const mimeType = ['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm']
-        .find(m => MediaRecorder.isTypeSupported(m)) || 'video/webm';
-      const ext = mimeType.startsWith('video/mp4') ? 'mp4' : 'webm';
-
-      // UI feedback
+      // --- Start recording ---
       btn.dataset.recording = 'true';
       const origHTML = btn.innerHTML;
-      btn.disabled = true;
+      btn.disabled   = true;
       btn.style.opacity = '0.7';
-      btn.innerHTML = '<span>⏺ Recording…</span>';
 
-      // Offscreen canvas at 9:16 target resolution
-      const canvas = document.createElement('canvas');
-      canvas.width  = OUT_W;
-      canvas.height = OUT_H;
-      const ctx = canvas.getContext('2d');
+      // Countdown badge
+      const countdown = document.createElement('div');
+      countdown.className = 'recording-countdown';
+      countdown.innerHTML = '<span class="rec-dot"></span><span id="rec-timer">REC 27s</span>';
+      document.body.appendChild(countdown);
+      let remaining = Math.ceil(RECORD_MS / 1000);
+      const timerTick = setInterval(() => {
+        remaining--;
+        const el = document.getElementById('rec-timer');
+        if (el) el.textContent = `REC ${remaining}s`;
+      }, 1000);
 
-      const source = document.querySelector('.iphone-screen');
-      const chunks = [];
-      const stream = canvas.captureStream(FPS);
-      const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 8_000_000 });
-      recorder.ondataavailable = e => { if (e.data && e.data.size > 0) chunks.push(e.data); };
-
-      // Frame capture loop
-      let rafId;
-      let stopped = false;
-      const capture = () => {
-        if (stopped) return;
-        html2canvas(source, {
-          backgroundColor: '#000000',
-          scale: OUT_W / source.offsetWidth,
-          useCORS: true,
-          allowTaint: true,
-          logging: false,
-        }).then(snap => {
-          // snap may have different height; we letterbox into 1080×1920
-          const scale = Math.min(OUT_W / snap.width, OUT_H / snap.height);
-          const dw = Math.round(snap.width  * scale);
-          const dh = Math.round(snap.height * scale);
-          const dx = Math.round((OUT_W - dw) / 2);
-          const dy = Math.round((OUT_H - dh) / 2);
-          ctx.fillStyle = '#000';
-          ctx.fillRect(0, 0, OUT_W, OUT_H);
-          ctx.drawImage(snap, dx, dy, dw, dh);
-          if (!stopped) rafId = requestAnimationFrame(capture);
-        }).catch(() => { if (!stopped) rafId = requestAnimationFrame(capture); });
-      };
+      const chunks   = [];
+      const recorder = new MediaRecorder(stream, {
+        mimeType,
+        videoBitsPerSecond: 12_000_000, // 12 Mbps — high quality
+      });
+      recorder.ondataavailable = e => { if (e.data?.size > 0) chunks.push(e.data); };
 
       recorder.onstop = () => {
-        stopped = true;
-        cancelAnimationFrame(rafId);
+        clearInterval(timerTick);
+        countdown.remove();
+        document.body.classList.remove('recording-mode');
+        stream.getTracks().forEach(t => t.stop());
+
         const blob = new Blob(chunks, { type: mimeType });
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
         a.href     = url;
         a.download = `gymguide-transformation.${ext}`;
+        document.body.appendChild(a);
         a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 8000);
+
         btn.disabled = false;
         btn.style.opacity = '1';
         btn.innerHTML = origHTML;
         btn.dataset.recording = 'false';
-        showToast(`Flow saved as ${ext.toUpperCase()}!`);
+        showToast(`Saved as ${ext.toUpperCase()} — check your Downloads!`);
       };
 
-      // Total flow duration ~25 seconds
-      const RECORD_DURATION = 25000;
+      // If user stops share themselves, clean up
+      stream.getVideoTracks()[0].addEventListener('ended', () => {
+        if (recorder.state !== 'inactive') recorder.stop();
+      });
 
-      recorder.start(200);   // collect data every 200ms
-      capture();             // start frame loop
+      // Kick off demo flow ~600ms after recording starts
       stopPlayback();
-      playFullFlow();        // kick off the animated demo
+      recorder.start(500);
+      setTimeout(() => playFullFlow(), 600);
 
+      // Auto-stop after RECORD_MS
       setTimeout(() => {
-        stopped = true;
-        cancelAnimationFrame(rafId);
-        recorder.stop();
-        stream.getTracks().forEach(t => t.stop());
-      }, RECORD_DURATION);
+        if (recorder.state !== 'inactive') recorder.stop();
+      }, RECORD_MS);
     }
 
     function loadSaved(id) {
