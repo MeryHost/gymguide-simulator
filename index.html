@@ -1260,9 +1260,9 @@
     @keyframes sliderHintClip { 0%   { clip-path: inset(0 50% 0 0); } 25%  { clip-path: inset(0 65% 0 0); } 50%  { clip-path: inset(0 35% 0 0); } 75%  { clip-path: inset(0 55% 0 0); } 100% { clip-path: inset(0 80% 0 0); } }
 
     .result-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 8px; }
-    .stat-mini-card { background: #1a1a1a; border: 1px solid #1f1f1f; border-radius: var(--border-radius-md); padding: 7px 10px; }
-    .stat-mini-label { font-size: 9px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
-    .stat-mini-value { font-size: 13px; font-weight: 800; color: #fff; margin-top: 1px; }
+    .stat-mini-card { background: #1a1a1a; border: 1px solid #1f1f1f; border-radius: var(--border-radius-md); padding: 8px 10px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 3px; min-width: 0; }
+    .stat-mini-label { font-size: clamp(8px, 2.5cqw, 9px); font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; line-height: 1; }
+    .stat-mini-value { font-size: clamp(12px, 3.5cqw, 14px); font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; line-height: 1.1; }
 
     .btn-share { width: 100%; padding: clamp(8px, 2.8cqw, 10px); border-radius: var(--border-radius-pill); background: var(--primary-red); color: white; font-size: clamp(12px, 4cqw, 14px); font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: auto; box-shadow: 0 4px 14px var(--primary-red-glow); transition: all var(--transition-speed); }
     .btn-share:hover { background: var(--primary-red-hover); }
