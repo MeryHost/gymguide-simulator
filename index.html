@@ -2481,26 +2481,26 @@
         updateDots('gymguide-home');
       }, 8000));
 
-      // Step 7: Navigate to More page (t=9800ms)
+      // Step 7: Navigate to More page (t=8900ms)
       playbackTimeouts.push(setTimeout(() => {
         simulateTap('.nav-tab:last-child', () => {
           goToMorePage();
           updateDots('gymguide-more');
         });
-      }, 9800));
+      }, 8900));
 
-      // Step 8: Tap "Preview My Future Body" (t=11800ms)
+      // Step 8: Tap "Preview My Future Body" (t=10900ms)
       playbackTimeouts.push(setTimeout(() => {
         simulateTap('#btn-preview-future', () => {
           tapPreviewFuture();
           updateDots('ai-flow');
         });
-      }, 11800));
+      }, 10900));
 
-      // Step 9: AI upload screen shown → start AI sub-flow (t=12500ms)
+      // Step 9: AI upload screen shown → start AI sub-flow (t=11600ms)
       playbackTimeouts.push(setTimeout(() => {
         playAISubFlow();
-      }, 12500));
+      }, 11600));
     }
 
     // ── AI Sub-flow (after "Preview My Future Body" tap) ──
