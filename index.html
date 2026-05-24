@@ -233,6 +233,264 @@
     }
 
     /* ═══════════════════════════════════════════
+       SCREEN 0: Viral Hook Intro
+    ═══════════════════════════════════════════ */
+    #screen-viral-hook {
+      background: #000;
+      color: #fff;
+      font-family: 'Outfit', -apple-system, sans-serif;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .hook-bg-wrapper {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    
+    .hook-bg-wrapper.active {
+      opacity: 1;
+    }
+    
+    .hook-bg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .hook-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.4) 100%);
+      pointer-events: none;
+    }
+    
+    .hook-vignette {
+      display: none;
+    }
+    
+    .hook-noise {
+      display: none;
+    }
+    
+    .hook-text-container {
+      position: absolute;
+      top: 1%;
+      left: 6%;
+      right: 6%;
+      z-index: 10;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px 8px;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.8);
+    }
+    
+    .hook-line {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+    }
+    
+    .hook-line.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .hook-pov {
+      color: #ff0000;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-shadow: 0 0 15px rgba(255,0,0,0.5);
+    }
+    
+    .hook-sub {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .hook-highlight {
+      color: #ff0000;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.1;
+      text-shadow: 0 0 20px rgba(255,0,0,0.6);
+      margin: 0;
+    }
+    
+    .hook-scanline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 20px 4px rgba(255, 255, 255, 0.7), 0 0 40px 10px rgba(255, 255, 255, 0.4);
+      opacity: 0;
+      transform: translateY(-10px);
+      z-index: 5;
+    }
+    
+    .hook-scanline.active {
+      opacity: 1;
+      animation: scanMove 1.5s linear forwards;
+    }
+    
+    .hook-scanline.intense {
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0 0 30px 10px rgba(255, 255, 255, 0.8), 0 0 50px 20px rgba(255, 255, 255, 0.5);
+    }
+    
+    @keyframes scanMove {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(667px); }
+    }
+    
+    .hook-slider-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .hook-slider-layer img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .hook-slider-layer.before-layer {
+      z-index: 2;
+    }
+    
+    .hook-slider-layer.after-layer {
+      z-index: 1;
+    }
+    
+    .hook-ai-simulation-text {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
+      z-index: 10;
+      opacity: 0.9;
+    }
+    
+    .hook-slider-divider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 100%;
+      width: 3px;
+      background: rgba(255,255,255,0.85);
+      z-index: 3;
+      transform: translateX(-50%);
+      box-shadow: 0 0 8px rgba(0,0,0,0.5);
+      opacity: 0;
+    }
+    
+    .hook-slider-handle {
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      transform: translate(-50%,-50%);
+      width: 36px;
+      height: 36px;
+      background: white;
+      border-radius: 50%;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      opacity: 0;
+    }
+    
+    .hook-slider-handle svg { width: 16px; height: 16px; color: #333; }
+    
+    .hook-slider-active .hook-slider-layer.before-layer {
+      animation: hookSlideClip 2.5s ease-in-out forwards;
+    }
+    
+    .hook-slider-active .hook-slider-divider,
+    .hook-slider-active .hook-slider-handle {
+      opacity: 1;
+      animation: hookSlideMove 2.5s ease-in-out forwards;
+    }
+    
+    @keyframes hookSlideClip {
+      0%   { clip-path: inset(0 0 0 0); -webkit-clip-path: inset(0 0 0 0); }
+      100% { clip-path: inset(0 100% 0 0); -webkit-clip-path: inset(0 100% 0 0); }
+    }
+    
+    @keyframes hookSlideMove {
+      0%   { left: 100%; }
+      100% { left: 0%; }
+    }
+    
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+      border: 1px solid #222;
+      border-radius: var(--border-radius-md);
+      padding: 12px 16px;
+      margin-bottom: 12px;
+    }
+    
+    .toggle-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: #333;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .toggle-switch.active {
+      background: var(--primary-red);
+      box-shadow: 0 0 10px var(--primary-red-glow);
+    }
+    
+    .toggle-thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+    
+    .toggle-switch.active .toggle-thumb {
+      transform: translateX(20px);
+    }
+
+    /* ═══════════════════════════════════════════
        SCREEN 1: iPhone Home Screen
     ═══════════════════════════════════════════ */
     #screen-home {
@@ -1260,8 +1518,8 @@
     .result-label.after { right: 10px; background: var(--primary-red); color: white; box-shadow: 0 2px 6px var(--primary-red-glow); }
 
     @keyframes sliderHint { 0%   { left: 90%; } 100% { left: 10%; } }
-    .slider-hint .slider-divider, .slider-hint .slider-handle { animation: sliderHint 5s ease-in-out forwards; }
-    .slider-hint .slider-layer.before-layer { animation: sliderHintClip 5s ease-in-out forwards; }
+    .slider-hint .slider-divider, .slider-hint .slider-handle { animation: sliderHint 2.5s ease-in-out forwards; }
+    .slider-hint .slider-layer.before-layer { animation: sliderHintClip 2.5s ease-in-out forwards; }
     @keyframes sliderHintClip { 0%   { clip-path: inset(0 10% 0 0); -webkit-clip-path: inset(0 10% 0 0); } 100% { clip-path: inset(0 90% 0 0); -webkit-clip-path: inset(0 90% 0 0); } }
 
     .result-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 8px; }
@@ -1476,7 +1734,7 @@
       <!-- Estimated Time -->
       <div>
         <span class="section-label">Estimated Time</span>
-        <input type="text" id="ctrl-estimated-time" class="studio-input" value="16 Weeks" oninput="updateEstimatedTime(this.value)">
+        <input type="text" id="ctrl-estimated-time" class="studio-input" value="52 Weeks" oninput="updateEstimatedTime(this.value)">
       </div>
 
       <!-- Scene Navigation -->
@@ -1488,6 +1746,14 @@
           <button class="nav-pill" onclick="goToScreenByName('gymguide-home')">GymGuide Home</button>
           <button class="nav-pill" onclick="goToScreenByName('gymguide-more')">More Page</button>
           <button class="nav-pill" onclick="goToScreenByName('ai-flow')">AI Flow</button>
+        </div>
+      </div>
+
+      <!-- Viral Hook Toggle -->
+      <div class="toggle-row">
+        <span class="toggle-label">Viral Hook Intro</span>
+        <div id="viral-hook-toggle" class="toggle-switch" onclick="toggleViralHook()">
+          <div class="toggle-thumb"></div>
         </div>
       </div>
 
@@ -1521,6 +1787,40 @@
         <div class="iphone-container">
 
           <div class="iphone-screen">
+
+            <!-- ════════════════════════════
+                 SCREEN 0: Viral Hook Intro
+            ════════════════════════════ -->
+            <div id="screen-viral-hook" class="screen-view">
+              <div class="hook-bg-wrapper" id="hook-bg-wrapper">
+                <div class="hook-slider-layer after-layer">
+                  <img id="hook-bg-img-after" src="assets/after_default.png" class="hook-bg" alt="After">
+                  <div class="hook-ai-simulation-text">AI simulation</div>
+                </div>
+                <div class="hook-slider-layer before-layer">
+                  <img id="hook-bg-img-before" src="assets/before_default.png" class="hook-bg" alt="Before">
+                </div>
+                <div class="hook-slider-divider" id="hook-slider-divider"></div>
+                <div class="hook-slider-handle" id="hook-slider-handle">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                    <polyline points="9 6 15 12 9 18" transform="matrix(-1 0 0 1 24 0)"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="hook-overlay"></div>
+              <div class="hook-vignette"></div>
+              <div class="hook-noise"></div>
+              
+              <div class="hook-scanline" id="hook-scanline"></div>
+              
+              <div class="hook-text-container">
+                <div class="hook-line hook-pov" id="hook-text-1">POV:</div>
+                <div class="hook-line hook-sub" id="hook-text-2">AI shows My Future body after</div>
+                <div class="hook-line hook-highlight" id="hook-text-3">1 YEAR</div>
+                <div class="hook-line hook-sub" id="hook-text-4">of consistency</div>
+              </div>
+            </div>
 
             <!-- ════════════════════════════
                  SCREEN 1: iPhone Home
@@ -2194,7 +2494,7 @@
                   <div class="result-stats-grid">
                     <div class="stat-mini-card">
                       <span class="stat-mini-label">Estimated Time</span>
-                      <span class="stat-mini-value" id="result-stat-time">16 Weeks</span>
+                      <span class="stat-mini-value" id="result-stat-time">52 Weeks</span>
                     </div>
                     <div class="stat-mini-card">
                       <span class="stat-mini-label">Target Goal</span>
@@ -2262,11 +2562,22 @@
       beforePhoto: 'assets/before_default.png',
       afterPhoto: 'assets/after_default.png',
       goal: 'muscle',
-      estimatedTime: '16 Weeks',
+      estimatedTime: '52 Weeks',
       currentMainScreen: 'home',   // main screen flow
       currentAIScreen: 'upload',   // within AI flow
-      savedTransformations: []
+      savedTransformations: [],
+      viralHookEnabled: false
     };
+
+    function toggleViralHook() {
+      state.viralHookEnabled = !state.viralHookEnabled;
+      const toggle = document.getElementById('viral-hook-toggle');
+      if (state.viralHookEnabled) {
+        toggle.classList.add('active');
+      } else {
+        toggle.classList.remove('active');
+      }
+    }
 
     const SCREEN_ORDER = ['home', 'safari', 'typing', 'loading', 'gymguide-home', 'gymguide-more', 'ai-flow'];
 
@@ -2378,8 +2689,8 @@
 
       if (typingInterval) clearInterval(typingInterval);
 
-      // Typing animation over 2 seconds (2000ms / 11 chars = ~181ms per char)
-      const delay = 2000 / fullText.length;
+      // Typing animation over 0.8 seconds (800ms / 11 chars)
+      const delay = 800 / fullText.length;
       typingInterval = setInterval(() => {
         textSpan.textContent += fullText[index];
         index++;
@@ -2452,20 +2763,89 @@
       playBtn.disabled = true;
       playBtn.innerHTML = `<svg class="spinner" viewBox="0 0 24 24" width="16" height="16" style="border-width:2px;border-color:rgba(255,255,255,0.2);border-top-color:#fff;margin-right:6px;"></svg><span>Playing Flow...</span>`;
 
-      // Step 1: Home screen
-      goToScreenByName('home');
-      updateDots('home');
+      let timeOffset = 0;
 
-      // Step 2: Tap Safari (t=1500ms)
+      if (state.viralHookEnabled) {
+        timeOffset = 10700;
+        
+        // Show viral hook screen
+        goToScreenByName('viral-hook');
+        updateDots('viral-hook');
+        
+        // Setup elements
+        const bgImgBefore = document.getElementById('hook-bg-img-before');
+        const bgImgAfter = document.getElementById('hook-bg-img-after');
+        bgImgBefore.src = state.beforePhoto;
+        bgImgAfter.src = state.afterPhoto;
+        
+        const bgWrapper = document.getElementById('hook-bg-wrapper');
+        const scanline = document.getElementById('hook-scanline');
+        
+        // Reset classes
+        bgWrapper.classList.remove('active', 'hook-slider-active');
+        scanline.classList.remove('active', 'intense');
+        scanline.style.animationDuration = '1.6s';
+        for(let i=1; i<=4; i++) {
+          document.getElementById('hook-text-'+i).classList.remove('active');
+        }
+        
+        // 0.0s Fade into fullscreen body image
+        playbackTimeouts.push(setTimeout(() => {
+          bgWrapper.classList.add('active');
+        }, 50));
+        
+        // 1.2s Text animates in line-by-line
+        playbackTimeouts.push(setTimeout(() => {
+          document.getElementById('hook-text-1').classList.add('active');
+        }, 1200));
+        playbackTimeouts.push(setTimeout(() => {
+          document.getElementById('hook-text-2').classList.add('active');
+        }, 1800));
+        playbackTimeouts.push(setTimeout(() => {
+          document.getElementById('hook-text-3').classList.add('active');
+        }, 2400));
+        playbackTimeouts.push(setTimeout(() => {
+          document.getElementById('hook-text-4').classList.add('active');
+        }, 3000));
+        
+        // 3.6s Start cinematic AI scan line moving vertically for 1.6 seconds
+        playbackTimeouts.push(setTimeout(() => {
+          scanline.classList.add('active');
+        }, 3600));
+        
+        // 4.7s AI scan intensifies right before transition
+        playbackTimeouts.push(setTimeout(() => {
+          scanline.classList.add('intense');
+        }, 4700));
+        
+        // 5.2s Start slow slide animation to reveal after image
+        playbackTimeouts.push(setTimeout(() => {
+          bgWrapper.classList.add('hook-slider-active');
+          
+          // Hide scan line and texts
+          scanline.classList.remove('active', 'intense');
+          for(let i=1; i<=4; i++) {
+            document.getElementById('hook-text-'+i).classList.remove('active');
+          }
+        }, 5200));
+      }
+
+      // Existing Flow
+      playbackTimeouts.push(setTimeout(() => {
+        // Step 1: Home screen
+        goToScreenByName('home');
+        updateDots('home');
+      }, timeOffset));
+
+      // Step 2: Tap Safari
       playbackTimeouts.push(setTimeout(() => {
         simulateTap('#dock-safari', () => tapSafari());
-      }, 1500));
+      }, timeOffset + 1500));
 
-      // Step 3: Safari start page shown, then tap URL bar (t=2700ms)
+      // Step 3: Safari start page shown, then tap URL bar
       playbackTimeouts.push(setTimeout(() => {
         simulateTap('.safari-url-bar', () => {
           startTyping(() => {
-            // Callback after typing completes (takes 2 seconds)
             // Wait 800ms for realism, then load GymGuide
             playbackTimeouts.push(setTimeout(() => {
               loadGymGuide();
@@ -2473,34 +2853,34 @@
             }, 800));
           });
         });
-      }, 2700));
+      }, timeOffset + 2700));
 
-      // Step 6: GymGuide home (muscle map) appears (t=8000ms)
+      // Step 6: GymGuide home (muscle map) appears (t=5200ms)
       playbackTimeouts.push(setTimeout(() => {
         goToScreenByName('gymguide-home');
         updateDots('gymguide-home');
-      }, 8000));
+      }, timeOffset + 5200));
 
-      // Step 7: Navigate to More page (t=8900ms)
+      // Step 7: Navigate to More page (t=6100ms)
       playbackTimeouts.push(setTimeout(() => {
         simulateTap('.nav-tab:last-child', () => {
           goToMorePage();
           updateDots('gymguide-more');
         });
-      }, 8900));
+      }, timeOffset + 6100));
 
-      // Step 8: Tap "Preview My Future Body" (t=10900ms)
+      // Step 8: Tap "Preview My Future Body" (t=8100ms)
       playbackTimeouts.push(setTimeout(() => {
         simulateTap('#btn-preview-future', () => {
           tapPreviewFuture();
           updateDots('ai-flow');
         });
-      }, 10900));
+      }, timeOffset + 8100));
 
-      // Step 9: AI upload screen shown → start AI sub-flow (t=11600ms)
+      // Step 9: AI upload screen shown → start AI sub-flow (t=8800ms)
       playbackTimeouts.push(setTimeout(() => {
         playAISubFlow();
-      }, 11600));
+      }, timeOffset + 8800));
     }
 
     // ── AI Sub-flow (after "Preview My Future Body" tap) ──
@@ -2541,30 +2921,30 @@
 
       // Ghost appears
       playbackTimeouts.push(setTimeout(() => {
-        ghost.style.transition = 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        ghost.style.transition = 'opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
         ghost.style.opacity = '1';
         ghost.style.transform = 'rotate(-6deg) scale(1)';
-      }, 500));
+      }, 200));
 
       // Ghost hovers
       playbackTimeouts.push(setTimeout(() => {
-        ghost.style.transition = 'top 0.22s ease, left 0.22s ease, transform 0.22s ease';
+        ghost.style.transition = 'top 0.1s ease, left 0.1s ease, transform 0.1s ease';
         ghost.style.top  = '7%';
         ghost.style.left = '13%';
         ghost.style.transform = 'rotate(-5deg) scale(1.03)';
-      }, 1000));
+      }, 400));
 
       // Ghost drags to upload box
       playbackTimeouts.push(setTimeout(() => {
-        ghost.style.transition = 'top 0.78s cubic-bezier(0.25, 0.46, 0.45, 0.94), left 0.78s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.78s ease';
+        ghost.style.transition = 'top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s ease';
         ghost.style.top  = '29%';
         ghost.style.left = '33%';
         ghost.style.transform = 'rotate(-1deg) scale(1.06)';
-      }, 1280));
+      }, 550));
 
       // Drop!
       playbackTimeouts.push(setTimeout(() => {
-        ghost.style.transition = 'opacity 0.22s ease, transform 0.22s ease';
+        ghost.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
         ghost.style.opacity = '0';
         ghost.style.transform = 'rotate(0deg) scale(0.72)';
 
@@ -2575,24 +2955,24 @@
           phonePreview.style.display = 'block';
           phoneUploadInner.style.display = 'none';
           uploadBox.classList.add('has-image');
-        }, 170));
+        }, 150));
 
         playbackTimeouts.push(setTimeout(() => {
           uploadBox.classList.remove('receiving-drop');
-        }, 800));
-      }, 2100));
+        }, 400));
+      }, 1000));
 
       // Analyzing overlay
       playbackTimeouts.push(setTimeout(() => {
         uploadOverlay.style.display = 'flex';
-      }, 2750));
+      }, 1650));
 
       // Validated
       playbackTimeouts.push(setTimeout(() => {
         uploadOverlay.style.display = 'none';
         if (validatedContent) { validatedContent.classList.remove('hidden'); validatedContent.classList.add('fadeInSlow'); }
         if (validationBadge) validationBadge.classList.remove('hidden');
-      }, 3900));
+      }, 2800));
 
       // Tap generate button
       playbackTimeouts.push(setTimeout(() => {
@@ -2603,7 +2983,7 @@
             playbackTimeouts.push(setTimeout(() => { genBtn.classList.remove('simulated-click'); }, 260));
           }
         });
-      }, 5500));
+      }, 4400));
 
       // Detecting screen
       playbackTimeouts.push(setTimeout(() => {
@@ -2614,7 +2994,7 @@
         text.textContent = '0%';
 
         const start = Date.now();
-        const duration = 3600;
+        const duration = 2000;
         progressInterval = setInterval(() => {
           const elapsed = Date.now() - start;
           const pct = Math.min(100, Math.floor((elapsed / duration) * 100));
@@ -2622,13 +3002,13 @@
           text.textContent = pct + '%';
           if (pct >= 100) { clearInterval(progressInterval); progressInterval = null; }
         }, 40);
-      }, 6100));
+      }, 5000));
 
       // Result screen
       playbackTimeouts.push(setTimeout(() => {
         setAIScreen('result');
         stopPlayback();
-      }, 10000));
+      }, 7300));
     }
 
     function stopPlayback() {
@@ -2712,7 +3092,7 @@
       document.querySelectorAll('.phone-goal-btn.weight-btn').forEach(b => b.classList.toggle('active', state.goal === 'weight'));
 
       const goalEl = document.getElementById('result-stat-goal');
-      if (goalEl) goalEl.textContent = state.goal === 'muscle' ? 'Build Muscle' : 'Burn Fat';
+      if (goalEl) goalEl.textContent = state.goal === 'muscle' ? 'Build Muscle' : 'Lose Weight';
 
       const timeEl = document.getElementById('result-stat-time');
       if (timeEl) timeEl.textContent = state.estimatedTime;
@@ -2723,7 +3103,7 @@
 
     function setGoal(goalName) {
       state.goal = goalName;
-      state.estimatedTime = goalName === 'muscle' ? '16 Weeks' : '12 Weeks';
+      state.estimatedTime = '52 Weeks';
       syncUI();
     }
 
@@ -2768,7 +3148,7 @@
       const btn = document.querySelector('.btn-save');
       if (btn.dataset.recording === 'true') return;
 
-      const RECORD_MS  = 27000; // full flow ~25s + buffer
+      const RECORD_MS  = 33000; // optimized full flow ~29.4s + buffer
       const MIME_TYPES = ['video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm'];
       const mimeType   = MIME_TYPES.find(m => MediaRecorder.isTypeSupported(m)) || 'video/webm';
       const ext        = mimeType.startsWith('video/mp4') ? 'mp4' : 'webm';
@@ -2806,7 +3186,7 @@
       // Countdown badge
       const countdown = document.createElement('div');
       countdown.className = 'recording-countdown';
-      countdown.innerHTML = '<span class="rec-dot"></span><span id="rec-timer">REC 27s</span>';
+      countdown.innerHTML = '<span class="rec-dot"></span><span id="rec-timer">REC 30s</span>';
       document.body.appendChild(countdown);
       let remaining = Math.ceil(RECORD_MS / 1000);
       const timerTick = setInterval(() => {
@@ -2961,7 +3341,7 @@
             // Cleanup class after animation completes
             setTimeout(() => {
               sc.classList.remove('slider-hint');
-            }, 5100);
+            }, 2600);
           }
         }
       };
