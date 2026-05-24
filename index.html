@@ -2754,6 +2754,35 @@
       state.currentAIScreen = name;
     }
 
+    // ── Tap Sound ──
+    const _tapAudio = new Audio('assets/tap.soundeffect.mp3');
+    _tapAudio.volume = 0.5;
+    function playTap() {
+      const s = _tapAudio.cloneNode();
+      s.volume = 0.5;
+      s.play().catch(() => {});
+    }
+
+    // ── Scan Line Sound ──
+    const _scanAudio = new Audio('assets/scanlinesoundeffect.MP3');
+    _scanAudio.volume = 0.7;
+    _scanAudio.loop = true;
+    function playScanSound() {
+      _scanAudio.currentTime = 0;
+      _scanAudio.play().catch(() => {});
+    }
+    function stopScanSound() {
+      const fadeOut = setInterval(() => {
+        if (_scanAudio.volume > 0.05) {
+          _scanAudio.volume = Math.max(0, _scanAudio.volume - 0.07);
+        } else {
+          _scanAudio.pause();
+          _scanAudio.volume = 0.7;
+          clearInterval(fadeOut);
+        }
+      }, 40);
+    }
+
     // ── Full Demo Playback ──
     function playFullFlow() {
       stopPlayback();
@@ -2811,6 +2840,7 @@
         // 3.6s Start cinematic AI scan line moving vertically for 1.6 seconds
         playbackTimeouts.push(setTimeout(() => {
           scanline.classList.add('active');
+          playScanSound();
         }, 3600));
         
         // 4.7s AI scan intensifies right before transition
@@ -2821,6 +2851,7 @@
         // 5.2s Start slow slide animation to reveal after image
         playbackTimeouts.push(setTimeout(() => {
           bgWrapper.classList.add('hook-slider-active');
+          stopScanSound();
           
           // Hide scan line and texts
           scanline.classList.remove('active', 'intense');
@@ -2839,11 +2870,13 @@
 
       // Step 2: Tap Safari
       playbackTimeouts.push(setTimeout(() => {
+        playTap();
         simulateTap('#dock-safari', () => tapSafari());
       }, timeOffset + 1500));
 
       // Step 3: Safari start page shown, then tap URL bar
       playbackTimeouts.push(setTimeout(() => {
+        playTap();
         simulateTap('.safari-url-bar', () => {
           startTyping(() => {
             // Wait 800ms for realism, then load GymGuide
@@ -2863,6 +2896,7 @@
 
       // Step 7: Navigate to More page (t=6100ms)
       playbackTimeouts.push(setTimeout(() => {
+        playTap();
         simulateTap('.nav-tab:last-child', () => {
           goToMorePage();
           updateDots('gymguide-more');
@@ -2871,6 +2905,7 @@
 
       // Step 8: Tap "Preview My Future Body" (t=8100ms)
       playbackTimeouts.push(setTimeout(() => {
+        playTap();
         simulateTap('#btn-preview-future', () => {
           tapPreviewFuture();
           updateDots('ai-flow');
@@ -2944,6 +2979,7 @@
 
       // Drop!
       playbackTimeouts.push(setTimeout(() => {
+        playTap();
         ghost.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
         ghost.style.opacity = '0';
         ghost.style.transform = 'rotate(0deg) scale(0.72)';
@@ -2976,6 +3012,7 @@
 
       // Tap generate button
       playbackTimeouts.push(setTimeout(() => {
+        playTap();
         simulateTap('#screen-upload .btn-generate-transform', () => {
           const genBtn = document.querySelector('#screen-upload .btn-generate-transform');
           if (genBtn) {
