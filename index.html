@@ -1406,6 +1406,14 @@
 
     .iphone-screen-view.active { display: flex; }
 
+    #screen-upload {
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: 16px;
+      scrollbar-width: none;
+    }
+    #screen-upload::-webkit-scrollbar { display: none; }
+
     @keyframes amazingSlideIn {
       0% { opacity: 0; transform: translateX(30px) scale(0.97); filter: blur(6px); }
       100% { opacity: 1; transform: translateX(0) scale(1); filter: blur(0px); }
@@ -1816,9 +1824,9 @@
               
               <div class="hook-text-container">
                 <div class="hook-line hook-pov" id="hook-text-1">POV:</div>
-                <div class="hook-line hook-sub" id="hook-text-2">AI shows My Future body after</div>
+                <div class="hook-line hook-sub" id="hook-text-2">AI shows your future body after</div>
                 <div class="hook-line hook-highlight" id="hook-text-3">1 YEAR</div>
-                <div class="hook-line hook-sub" id="hook-text-4">of consistency</div>
+                <div class="hook-line hook-sub" id="hook-text-4">of consistency.</div>
               </div>
             </div>
 
@@ -3185,16 +3193,12 @@
       const btn = document.querySelector('.btn-save');
       if (btn.dataset.recording === 'true') return;
 
-      const RECORD_MS  = 33000; // optimized full flow ~29.4s + buffer
+      const RECORD_MS  = 33000;
       const MIME_TYPES = ['video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm'];
       const mimeType   = MIME_TYPES.find(m => MediaRecorder.isTypeSupported(m)) || 'video/webm';
       const ext        = mimeType.startsWith('video/mp4') ? 'mp4' : 'webm';
 
-      // --- Enter recording mode (phone fills the whole tab) ---
-      document.body.classList.add('recording-mode');
-      await new Promise(r => setTimeout(r, 350)); // let CSS reflow
-
-      // --- Native tab capture ---
+      // ── Step 1: Request stream FIRST on normal layout so Chrome captures live frames ──
       let stream;
       try {
         stream = await navigator.mediaDevices.getDisplayMedia({
@@ -3204,15 +3208,19 @@
             width:     { ideal: 1920 },
             height:    { ideal: 1080 },
           },
-          audio: false,
+          audio: true,
           preferCurrentTab: true,
           selfBrowserSurface: 'include',
         });
       } catch (err) {
-        document.body.classList.remove('recording-mode');
         if (err.name !== 'NotAllowedError') showToast('Screen capture not supported in this browser');
         return;
       }
+
+      // ── Step 2: NOW switch to full-screen recording layout (stream is already live) ──
+      document.body.classList.add('recording-mode');
+      // Wait for reflow so Chrome sees the new layout before we start playing
+      await new Promise(r => setTimeout(r, 600));
 
       // --- Start recording ---
       btn.dataset.recording = 'true';
@@ -3220,26 +3228,35 @@
       btn.disabled   = true;
       btn.style.opacity = '0.7';
 
-      // Countdown badge
+      // Countdown badge — shown OUTSIDE phone viewport so it doesn't appear in capture
       const countdown = document.createElement('div');
       countdown.className = 'recording-countdown';
-      countdown.innerHTML = '<span class="rec-dot"></span><span id="rec-timer">REC 30s</span>';
-      document.body.appendChild(countdown);
       let remaining = Math.ceil(RECORD_MS / 1000);
+      countdown.innerHTML = `<span class="rec-dot"></span><span id="rec-timer">REC ${remaining}s</span>`;
+      document.body.appendChild(countdown);
+
       const timerTick = setInterval(() => {
         remaining--;
         const el = document.getElementById('rec-timer');
         if (el) el.textContent = `REC ${remaining}s`;
       }, 1000);
 
-      const chunks   = [];
-      const recorder = new MediaRecorder(stream, {
+      const chunks = [];
+
+      // Mix video + any captured audio tracks
+      const allTracks = [...stream.getVideoTracks(), ...stream.getAudioTracks()];
+      const recStream = new MediaStream(allTracks);
+
+      const recorder = new MediaRecorder(recStream, {
         mimeType,
-        videoBitsPerSecond: 12_000_000, // 12 Mbps — high quality
+        videoBitsPerSecond: 12_000_000,
       });
       recorder.ondataavailable = e => { if (e.data?.size > 0) chunks.push(e.data); };
 
-      recorder.onstop = () => {
+      let stopped = false;
+      function finishRecording() {
+        if (stopped) return;
+        stopped = true;
         clearInterval(timerTick);
         countdown.remove();
         document.body.classList.remove('recording-mode');
@@ -3260,22 +3277,25 @@
         btn.innerHTML = origHTML;
         btn.dataset.recording = 'false';
         showToast(`Saved as ${ext.toUpperCase()} — check your Downloads!`);
-      };
+      }
 
-      // If user stops share themselves, clean up
+      recorder.onstop = finishRecording;
+
+      // If user stops share themselves, also clean up gracefully
       stream.getVideoTracks()[0].addEventListener('ended', () => {
         if (recorder.state !== 'inactive') recorder.stop();
+        else finishRecording();
       });
 
-      // Kick off demo flow ~600ms after recording starts
-      stopPlayback();
+      // Start recording, wait 1s for the stream to stabilise, then kick off flow
       recorder.start(500);
-      setTimeout(() => playFullFlow(), 600);
+      stopPlayback();
+      setTimeout(() => playFullFlow(), 1000);
 
-      // Auto-stop after RECORD_MS
+      // Auto-stop after RECORD_MS (measured from flow start)
       setTimeout(() => {
         if (recorder.state !== 'inactive') recorder.stop();
-      }, RECORD_MS);
+      }, RECORD_MS + 1000);
     }
 
     function loadSaved(id) {
